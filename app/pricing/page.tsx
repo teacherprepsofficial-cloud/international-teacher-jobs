@@ -127,7 +127,8 @@ export default function PricingPage() {
         ))}
       </div>
 
-      <div className="mt-12 text-center text-sm text-text-muted">
+      <div className="mt-12 text-center text-sm text-text-muted space-y-2">
+        <p>Already have an account? <Link href="/school/login" className="text-accent-blue hover:underline">Log In</Link></p>
         <p>Need help? <Link href="/contact" className="text-accent-blue hover:underline">Contact us</Link></p>
       </div>
     </div>
