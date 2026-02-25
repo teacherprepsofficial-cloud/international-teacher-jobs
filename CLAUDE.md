@@ -149,7 +149,43 @@ npx tsx scripts/run-stale-check.ts
 - Crawled jobs show "AUTO" badge + "View source listing" link
 - Approve button sets job directly to `live`
 
-## Homepage Dynamic Counter
-- Shows today's date (left) and "Total Jobs: X" (right) above filters
+## Homepage Layout
+- Date divider above each day's job group (from job `createdAt`)
+- "Total Jobs: X" counter on the same row as the first date divider (right-aligned)
 - Count reflects total `live` jobs in the database (updates on every admin approval)
 - Jobs API returns `{ jobs, totalLiveCount }` to power the counter
+
+## Job Sorting — Tier Priority Within Each Day
+The GET `/api/jobs` endpoint sorts jobs **newest day first**, then within each day by **subscription tier priority**:
+1. **Premium** (gold badge) — pinned to top of the day
+2. **Plus/Featured** (purple badge) — below premium
+3. **Starter/Basic** — below plus
+
+This is the core value proposition for higher tiers — paid listings get priority placement within their day's group.
+
+## Stripe Payment System
+
+### Status: LIVE (keys configured 2026-02-25)
+Shares the same Stripe account as TeacherPreps.com.
+
+### Environment Variables (all set in `.env.local` + Vercel production)
+| Variable | Status |
+|----------|--------|
+| `STRIPE_SECRET_KEY` | `sk_live_...` (set) |
+| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | `pk_live_...` (set) |
+| `STRIPE_BASIC_PRICE_ID` | `price_1T4dr6Ahz6MDbiqoTP2yWszy` (set) |
+| `STRIPE_STANDARD_PRICE_ID` | `price_1T4duiAhz6MDbiqo06sSNTHE` (set) |
+| `STRIPE_PREMIUM_PRICE_ID` | `price_1T4dz9Ahz6MDbiqoCiqbfARk` (set) |
+| `STRIPE_WEBHOOK_SECRET` | **TODO** — still placeholder |
+
+### Key Files
+| File | Purpose |
+|------|---------|
+| `app/api/stripe/create-checkout/route.ts` | Creates Stripe checkout session |
+| `app/api/stripe/webhook/route.ts` | Handles Stripe webhook events |
+| `app/pricing/page.tsx` | Pricing page with 3 plans |
+
+## Header Navigation
+- Public nav: Contact → Pricing → School Login → Post a Job
+- School nav (when on `/school/*`): Dashboard → Logout
+- Contact page: `/contact` (email: `hello@internationalteacherjobs.com`)
