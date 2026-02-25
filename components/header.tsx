@@ -17,6 +17,9 @@ export default function Header() {
         <nav className="flex gap-4">
           {!isSchoolRoute && (
             <>
+              <Link href="/contact" className="text-sm text-accent-blue hover:underline">
+                Contact
+              </Link>
               <Link href="/pricing" className="text-sm text-accent-blue hover:underline">
                 Pricing
               </Link>

@@ -40,13 +40,6 @@ export default function HomePage() {
   const countries = getCountriesForFilter()
   const regions = getRegionsForFilter()
 
-  const today = new Date().toLocaleDateString('en-US', {
-    weekday: 'long',
-    month: 'long',
-    day: 'numeric',
-    year: 'numeric',
-  })
-
   useEffect(() => {
     const fetchJobs = async () => {
       try {
@@ -97,14 +90,6 @@ export default function HomePage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* Date + Job Count */}
-      <div className="flex items-center justify-between mb-6">
-        <p className="text-sm text-text-muted">{today}</p>
-        <p className="text-sm font-semibold">
-          Total Jobs: <span className="text-accent-blue">{totalLiveCount.toLocaleString()}</span>
-        </p>
-      </div>
-
       {/* Filters */}
       <div className="mb-8 flex flex-wrap gap-4 items-center">
         <select value={selectedRegion} onChange={(e) => setSelectedRegion(e.target.value)}>
@@ -154,8 +139,15 @@ export default function HomePage() {
             return (
               <div key={job._id}>
                 {showDate && (
-                  <div className="mb-3 text-xs text-text-muted font-semibold">
-                    {formatDate(job.createdAt)}
+                  <div className="mb-3 flex items-center justify-between">
+                    <span className="text-xs text-text-muted font-semibold">
+                      {formatDate(job.createdAt)}
+                    </span>
+                    {index === 0 && (
+                      <span className="text-xs font-semibold">
+                        Total Jobs: <span className="text-accent-blue">{totalLiveCount.toLocaleString()}</span>
+                      </span>
+                    )}
                   </div>
                 )}
                 <Link href={`/jobs/${job._id}`}>

@@ -26,13 +26,28 @@ export async function GET(request: NextRequest) {
     if (country) query.countryCode = country
     if (category) query.positionCategory = category
 
-    const [jobs, totalLiveCount] = await Promise.all([
+    const [rawJobs, totalLiveCount] = await Promise.all([
       JobPosting.find(query)
         .populate('adminId', 'schoolName')
         .sort({ createdAt: -1 })
         .lean(),
       JobPosting.countDocuments({ status: 'live' }),
     ])
+
+    // Within each day, pin premium to top, then standard (plus), then basic (starter)
+    const tierPriority: Record<string, number> = { premium: 0, standard: 1, basic: 2 }
+    const jobs = (rawJobs as any[]).sort((a, b) => {
+      // Group by date first (newest day first)
+      const dayA = new Date(a.createdAt).toDateString()
+      const dayB = new Date(b.createdAt).toDateString()
+      if (dayA !== dayB) {
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      }
+      // Same day: sort by tier priority (premium first)
+      const tierA = tierPriority[a.subscriptionTier] ?? 2
+      const tierB = tierPriority[b.subscriptionTier] ?? 2
+      return tierA - tierB
+    })
 
     return NextResponse.json({ jobs, totalLiveCount })
   } catch (error: any) {
