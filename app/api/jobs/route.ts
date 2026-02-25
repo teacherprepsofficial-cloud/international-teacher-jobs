@@ -22,9 +22,9 @@ export async function GET(request: NextRequest) {
       .lean()
 
     return NextResponse.json(jobs)
-  } catch (error) {
+  } catch (error: any) {
     console.error('Failed to fetch jobs:', error)
-    return NextResponse.json({ error: 'Failed to fetch jobs' }, { status: 500 })
+    return NextResponse.json({ error: 'Failed to fetch jobs', detail: error?.message || 'unknown' }, { status: 500 })
   }
 }
 
