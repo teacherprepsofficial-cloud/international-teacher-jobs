@@ -114,7 +114,8 @@ export async function runCrawl(maxPagesOverride?: number): Promise<CrawlResult[]
               contractType: job.contractType,
               startDate: job.startDate,
               subscriptionTier: 'basic',
-              status: 'pending',
+              status: 'live',
+              publishedAt: new Date(),
               // Crawler-specific fields
               sourceUrl: job.sourceUrl,
               sourceKey: job.sourceKey,

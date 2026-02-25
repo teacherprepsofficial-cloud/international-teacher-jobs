@@ -132,16 +132,10 @@ export default function JobDetailPage() {
         </div>
 
         {/* Apply Button */}
-        <div className="flex gap-4">
-          <a href={job.applicationUrl} target="_blank" rel="noopener noreferrer" className="btn-primary flex-1 text-center">
+        <div>
+          <a href={job.applicationUrl} target="_blank" rel="noopener noreferrer" className="btn-primary w-full block text-center">
             Apply Now
           </a>
-          <button
-            onClick={() => navigator.share?.({ title: job.position, url: window.location.href })}
-            className="btn-outline flex-1"
-          >
-            Share
-          </button>
         </div>
 
         {/* Footer */}

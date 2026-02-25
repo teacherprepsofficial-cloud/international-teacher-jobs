@@ -28,7 +28,7 @@ textarea {
 
 /* Pill button base style */
 .btn-pill {
-  @apply rounded-full px-4 py-2 font-semibold transition-colors;
+  @apply rounded-full px-4 py-2 font-semibold transition-all duration-200 hover:scale-[1.03];
 }
 
 .btn-primary {

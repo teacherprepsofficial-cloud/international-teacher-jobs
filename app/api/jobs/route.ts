@@ -41,7 +41,8 @@ export async function POST(request: NextRequest) {
 
     const job = await JobPosting.create({
       ...body,
-      status: 'pending',
+      status: 'live',
+      publishedAt: new Date(),
     })
 
     return NextResponse.json(job, { status: 201 })
