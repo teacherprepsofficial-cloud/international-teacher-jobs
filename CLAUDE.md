@@ -176,14 +176,30 @@ Shares the same Stripe account as TeacherPreps.com.
 | `STRIPE_BASIC_PRICE_ID` | `price_1T4dr6Ahz6MDbiqoTP2yWszy` (set) |
 | `STRIPE_STANDARD_PRICE_ID` | `price_1T4duiAhz6MDbiqo06sSNTHE` (set) |
 | `STRIPE_PREMIUM_PRICE_ID` | `price_1T4dz9Ahz6MDbiqoCiqbfARk` (set) |
-| `STRIPE_WEBHOOK_SECRET` | **TODO** — still placeholder |
+| `STRIPE_WEBHOOK_SECRET` | `whsec_...` (set) |
+| `NEXT_PUBLIC_APP_URL` | `https://international-teacher-jobs.vercel.app` (set) |
+
+### Webhook Endpoint
+- **URL**: `https://international-teacher-jobs.vercel.app/api/stripe/webhook`
+- **ID**: `we_1T4fYTAhz6MDbiqo8D1Ljpol`
+- **Events**: `checkout.session.completed`, `invoice.paid`, `invoice.payment_failed`, `customer.subscription.updated`, `customer.subscription.deleted`
+
+### Webhook Event Handling
+| Event | Action |
+|-------|--------|
+| `checkout.session.completed` | Sets admin's tier, stripeCustomerId, subscriptionId, status → active |
+| `invoice.paid` | Renews admin status → active |
+| `customer.subscription.updated` | Syncs status (active / past_due) |
+| `customer.subscription.deleted` | Sets status → cancelled, takes down all live job postings |
+| `invoice.payment_failed` | Sets admin status → past_due |
 
 ### Key Files
 | File | Purpose |
 |------|---------|
-| `app/api/stripe/create-checkout/route.ts` | Creates Stripe checkout session |
-| `app/api/stripe/webhook/route.ts` | Handles Stripe webhook events |
+| `app/api/stripe/create-checkout/route.ts` | Creates Stripe checkout session (passes adminId + tier in metadata) |
+| `app/api/stripe/webhook/route.ts` | Handles all Stripe webhook events |
 | `app/pricing/page.tsx` | Pricing page with 3 plans |
+| `lib/stripe.ts` | Stripe client + price ID mapping |
 
 ## Header Navigation
 - Public nav: Contact → Pricing → School Login → Post a Job
