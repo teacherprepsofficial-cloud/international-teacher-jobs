@@ -29,24 +29,29 @@ export async function GET(request: NextRequest) {
     const [rawJobs, totalLiveCount] = await Promise.all([
       JobPosting.find(query)
         .populate('adminId', 'schoolName')
-        .sort({ createdAt: -1 })
+        .sort({ publishedAt: -1 })
         .lean(),
       JobPosting.countDocuments({ status: 'live' }),
     ])
 
-    // Within each day, pin premium to top, then standard (plus), then basic (starter)
+    // Sort by publishedAt (when approved/went live), NOT createdAt (when crawler found it).
+    // Within each day: premium first, then plus, then starter. Within same tier: newest first.
     const tierPriority: Record<string, number> = { premium: 0, standard: 1, basic: 2 }
     const jobs = (rawJobs as any[]).sort((a, b) => {
+      const pubA = a.publishedAt || a.createdAt
+      const pubB = b.publishedAt || b.createdAt
       // Group by date first (newest day first)
-      const dayA = new Date(a.createdAt).toDateString()
-      const dayB = new Date(b.createdAt).toDateString()
+      const dayA = new Date(pubA).toDateString()
+      const dayB = new Date(pubB).toDateString()
       if (dayA !== dayB) {
-        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        return new Date(pubB).getTime() - new Date(pubA).getTime()
       }
       // Same day: sort by tier priority (premium first)
       const tierA = tierPriority[a.subscriptionTier] ?? 2
       const tierB = tierPriority[b.subscriptionTier] ?? 2
-      return tierA - tierB
+      if (tierA !== tierB) return tierA - tierB
+      // Same day + same tier: newest first
+      return new Date(pubB).getTime() - new Date(pubA).getTime()
     })
 
     return NextResponse.json({ jobs, totalLiveCount })

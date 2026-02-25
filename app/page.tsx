@@ -19,6 +19,7 @@ interface Job {
   salary?: string
   subscriptionTier: 'basic' | 'standard' | 'premium'
   createdAt: string
+  publishedAt?: string
 }
 
 const POSITION_CATEGORIES = [
@@ -81,10 +82,12 @@ export default function HomePage() {
     )
   }
 
+  const getJobDate = (job: Job) => job.publishedAt || job.createdAt
+
   const shouldShowDate = (index: number) => {
     if (index === 0) return true
-    const currentJobDate = new Date(jobs[index].createdAt)
-    const previousJobDate = new Date(jobs[index - 1].createdAt)
+    const currentJobDate = new Date(getJobDate(jobs[index]))
+    const previousJobDate = new Date(getJobDate(jobs[index - 1]))
     return !isSameDay(currentJobDate, previousJobDate)
   }
 
@@ -133,7 +136,6 @@ export default function HomePage() {
       ) : (
         <div className="space-y-4">
           {jobs.map((job, index) => {
-            const jobDate = new Date(job.createdAt)
             const showDate = shouldShowDate(index)
 
             return (
@@ -141,7 +143,7 @@ export default function HomePage() {
                 {showDate && (
                   <div className="mb-3 flex items-center justify-between">
                     <span className="text-xs text-text-muted font-semibold">
-                      {formatDate(job.createdAt)}
+                      {formatDate(getJobDate(job))}
                     </span>
                     {index === 0 && (
                       <span className="text-xs font-semibold">
