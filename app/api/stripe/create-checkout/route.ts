@@ -67,13 +67,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ url: session.url })
   } catch (error: any) {
-    const skPrefix = (process.env.STRIPE_SECRET_KEY || '').substring(0, 10)
-    const priceCheck = process.env.STRIPE_BASIC_PRICE_ID || 'MISSING'
     console.error('Checkout error:', error?.message || error)
-    return NextResponse.json({
-      error: 'Failed to create checkout session',
-      detail: error?.message || 'unknown',
-      debug: { skPrefix, priceCheck },
-    }, { status: 500 })
+    return NextResponse.json({ error: 'Failed to create checkout session' }, { status: 500 })
   }
 }
