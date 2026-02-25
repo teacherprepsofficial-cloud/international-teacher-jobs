@@ -35,6 +35,41 @@ const COUNTRY_CODE_MAP: Record<string, string> = {
   'mongolia': 'MN', 'fiji': 'FJ', 'papua new guinea': 'PG',
 }
 
+// UK cities, regions, and postcodes that TES lists without "United Kingdom"
+const UK_LOCATIONS = new Set([
+  'london', 'manchester', 'birmingham', 'leeds', 'liverpool', 'bristol', 'sheffield',
+  'newcastle', 'nottingham', 'leicester', 'coventry', 'bradford', 'cardiff', 'edinburgh',
+  'glasgow', 'belfast', 'oxford', 'cambridge', 'brighton', 'reading', 'southampton',
+  'portsmouth', 'plymouth', 'derby', 'wolverhampton', 'bath', 'york', 'exeter', 'norwich',
+  'canterbury', 'chester', 'winchester', 'durham', 'salisbury', 'lincoln', 'carlisle',
+  'worcester', 'hereford', 'gloucester', 'peterborough', 'lancaster', 'st albans',
+  // London boroughs and areas
+  'shoreditch', 'islington', 'hackney', 'camden', 'westminster', 'kensington', 'chelsea',
+  'fulham', 'hammersmith', 'brixton', 'peckham', 'dalston', 'stratford', 'greenwich',
+  'lewisham', 'croydon', 'wimbledon', 'richmond', 'ealing', 'harrow', 'barnet',
+  'enfield', 'walthamstow', 'tottenham', 'finsbury', 'bermondsey', 'southwark',
+  'lambeth', 'wandsworth', 'merton', 'bromley', 'bexley', 'havering', 'redbridge',
+  // Counties and regions
+  'surrey', 'kent', 'essex', 'sussex', 'hampshire', 'berkshire', 'buckinghamshire',
+  'hertfordshire', 'bedfordshire', 'oxfordshire', 'wiltshire', 'dorset', 'devon',
+  'cornwall', 'somerset', 'norfolk', 'suffolk', 'cambridgeshire', 'lincolnshire',
+  'yorkshire', 'lancashire', 'cheshire', 'staffordshire', 'warwickshire', 'shropshire',
+  'derbyshire', 'leicestershire', 'northamptonshire', 'nottinghamshire', 'rutland',
+  'cumbria', 'northumberland', 'tyne and wear', 'west midlands', 'east midlands',
+  'merseyside', 'greater manchester', 'south yorkshire', 'west yorkshire',
+  'bury', 'bolton', 'rochdale', 'oldham', 'stockport', 'wigan', 'salford',
+  'oxted',
+])
+
+function isUkLocation(text: string): boolean {
+  const lower = text.toLowerCase().trim()
+  // Direct match
+  if (UK_LOCATIONS.has(lower)) return true
+  // UK postcode pattern (e.g., "TN14 6AE", "SW1A 1AA")
+  if (/^[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}$/i.test(lower)) return true
+  return false
+}
+
 function resolveCountryCode(location: string): { city: string; country: string; countryCode: string } {
   // TES displayLocation is often "City, Country" or just "Country"
   const parts = location.split(',').map(p => p.trim())
@@ -60,6 +95,18 @@ function resolveCountryCode(location: string): { city: string; country: string; 
     for (const [key, code] of Object.entries(COUNTRY_CODE_MAP)) {
       if (countryLower.includes(key) || key.includes(countryLower)) {
         countryCode = code
+        break
+      }
+    }
+  }
+
+  // If still unresolved, check if the location looks like a UK city/region/postcode
+  if (countryCode === 'XX') {
+    for (const part of parts) {
+      if (isUkLocation(part)) {
+        countryCode = 'GB'
+        country = 'United Kingdom'
+        city = parts[0]
         break
       }
     }
