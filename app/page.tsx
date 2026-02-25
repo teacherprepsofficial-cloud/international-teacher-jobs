@@ -15,6 +15,7 @@ interface Job {
   description: string
   contractType: string
   startDate: string
+  salary?: string
   subscriptionTier: 'basic' | 'standard' | 'premium'
   createdAt: string
 }
@@ -30,10 +31,18 @@ const POSITION_CATEGORIES = [
 
 export default function HomePage() {
   const [jobs, setJobs] = useState<Job[]>([])
+  const [totalLiveCount, setTotalLiveCount] = useState(0)
   const [loading, setLoading] = useState(true)
   const [selectedCountry, setSelectedCountry] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('')
   const countries = getCountriesForFilter()
+
+  const today = new Date().toLocaleDateString('en-US', {
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+  })
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -44,7 +53,8 @@ export default function HomePage() {
 
         const res = await fetch(`/api/jobs?${params.toString()}`)
         const data = await res.json()
-        setJobs(data)
+        setJobs(data.jobs || [])
+        setTotalLiveCount(data.totalLiveCount || 0)
       } catch (error) {
         console.error('Failed to fetch jobs:', error)
       } finally {
@@ -82,6 +92,14 @@ export default function HomePage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      {/* Date + Job Count */}
+      <div className="flex items-center justify-between mb-6">
+        <p className="text-sm text-text-muted">{today}</p>
+        <p className="text-sm font-semibold">
+          Total Jobs: <span className="text-accent-blue">{totalLiveCount.toLocaleString()}</span>
+        </p>
+      </div>
+
       {/* Filters */}
       <div className="mb-8 flex flex-wrap gap-4 items-center">
         <select value={selectedCountry} onChange={(e) => setSelectedCountry(e.target.value)}>

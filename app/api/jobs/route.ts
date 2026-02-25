@@ -17,12 +17,15 @@ export async function GET(request: NextRequest) {
     if (country) query.countryCode = country
     if (category) query.positionCategory = category
 
-    const jobs = await JobPosting.find(query)
-      .populate('adminId', 'schoolName')
-      .sort({ createdAt: -1 })
-      .lean()
+    const [jobs, totalLiveCount] = await Promise.all([
+      JobPosting.find(query)
+        .populate('adminId', 'schoolName')
+        .sort({ createdAt: -1 })
+        .lean(),
+      JobPosting.countDocuments({ status: 'live' }),
+    ])
 
-    return NextResponse.json(jobs)
+    return NextResponse.json({ jobs, totalLiveCount })
   } catch (error: any) {
     console.error('Failed to fetch jobs:', error)
     return NextResponse.json({ error: 'Failed to fetch jobs', detail: error?.message || 'unknown' }, { status: 500 })

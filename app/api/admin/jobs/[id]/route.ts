@@ -13,7 +13,8 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
     const { status, message, adminNotes } = body
 
     const updateData: any = { status, adminNotes }
-    if (status === 'approved') {
+    if (status === 'approved' || status === 'live') {
+      updateData.status = 'live'
       updateData.publishedAt = new Date()
     }
 
