@@ -2,6 +2,8 @@ import { connectDB } from '@/lib/db'
 import { JobPosting } from '@/models/JobPosting'
 import { NextRequest, NextResponse } from 'next/server'
 
+export const dynamic = 'force-dynamic'
+
 export async function GET(_request: NextRequest, { params }: { params: { id: string } }) {
   try {
     await connectDB()

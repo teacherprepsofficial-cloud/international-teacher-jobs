@@ -3,21 +3,21 @@ import { JobPosting } from '@/models/JobPosting'
 import { AdminMessage } from '@/models/AdminMessage'
 import { NextRequest, NextResponse } from 'next/server'
 
+export const dynamic = 'force-dynamic'
+
 export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     await connectDB()
 
-    const { status, message, adminNotes } = await request.json()
+    const body = await request.json()
+    const { status, message, adminNotes } = body
 
-    const job = await JobPosting.findByIdAndUpdate(
-      params.id,
-      {
-        status,
-        adminNotes,
-        ...(status === 'approved' && { publishedAt: new Date() }),
-      },
-      { new: true }
-    )
+    const updateData: any = { status, adminNotes }
+    if (status === 'approved') {
+      updateData.publishedAt = new Date()
+    }
+
+    const job = await (JobPosting as any).findByIdAndUpdate(params.id, updateData, { new: true })
 
     if (!job) {
       return NextResponse.json({ error: 'Job not found' }, { status: 404 })
@@ -25,7 +25,7 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
 
     // Create message if correction needed
     if (status === 'correction_needed' && message) {
-      await AdminMessage.create({
+      await (AdminMessage as any).create({
         jobId: job._id,
         schoolAdminId: job.adminId,
         fromSuperAdmin: true,
