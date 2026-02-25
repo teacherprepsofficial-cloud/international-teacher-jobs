@@ -203,12 +203,9 @@ export default function PostJobPage() {
           />
         </div>
 
-        <div className="flex gap-4">
-          <button type="submit" disabled={loading} className="btn-primary flex-1 disabled:opacity-50">
-            {loading ? 'Submitting...' : 'Submit for Review'}
-          </button>
-          <button type="button" onClick={() => router.back()} className="btn-outline flex-1">
-            Cancel
+        <div>
+          <button type="submit" disabled={loading} className="btn-primary w-full disabled:opacity-50">
+            {loading ? 'Submitting...' : 'Post Your Job'}
           </button>
         </div>
       </form>
