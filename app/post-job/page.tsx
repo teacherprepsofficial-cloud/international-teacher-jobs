@@ -182,12 +182,24 @@ export default function PostJobPage() {
           <div>
             <label className="block text-sm font-semibold mb-2">Start Date *</label>
             <input
-              type="text"
-              name="startDate"
-              value={formData.startDate}
-              onChange={handleChange}
+              type="date"
+              name="startDateRaw"
+              value={formData.startDate ? (() => {
+                // Convert stored MM/DD/YYYY back to YYYY-MM-DD for the input
+                const parts = formData.startDate.split('/')
+                if (parts.length === 3) return `${parts[2]}-${parts[0].padStart(2, '0')}-${parts[1].padStart(2, '0')}`
+                return formData.startDate
+              })() : ''}
+              onChange={(e) => {
+                const val = e.target.value // YYYY-MM-DD from date input
+                if (val) {
+                  const [y, m, d] = val.split('-')
+                  setFormData((prev) => ({ ...prev, startDate: `${m}/${d}/${y}` }))
+                } else {
+                  setFormData((prev) => ({ ...prev, startDate: '' }))
+                }
+              }}
               required
-              placeholder="e.g., August 2026"
               className="w-full px-4 py-2 border border-card-border rounded"
             />
           </div>
