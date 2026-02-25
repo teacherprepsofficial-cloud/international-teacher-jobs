@@ -150,16 +150,21 @@ npx tsx scripts/run-stale-check.ts
 - Approve button sets job directly to `live`
 
 ## Homepage Layout
-- Date divider above each day's job group (from job `createdAt`)
+- Date divider above each day's job group (based on `publishedAt`, NOT `createdAt`)
 - "Total Jobs: X" counter on the same row as the first date divider (right-aligned)
 - Count reflects total `live` jobs in the database (updates on every admin approval)
 - Jobs API returns `{ jobs, totalLiveCount }` to power the counter
 
-## Job Sorting — Tier Priority Within Each Day
-The GET `/api/jobs` endpoint sorts jobs **newest day first**, then within each day by **subscription tier priority**:
-1. **Premium** (gold badge) — pinned to top of the day
-2. **Plus/Featured** (purple badge) — below premium
-3. **Starter/Basic** — below plus
+## Job Sorting — publishedAt-Based (Updated 2026-02-25)
+
+**CRITICAL: Sort by `publishedAt`, NOT `createdAt`.** For crawled jobs, `createdAt` is when the crawler found the job (could be days ago), while `publishedAt` is when admin approved it. Sorting by `createdAt` buries newly approved jobs under old dates.
+
+The GET `/api/jobs` endpoint sorts:
+1. **Newest published day first** (using `publishedAt`, falling back to `createdAt` for legacy jobs)
+2. **Within each day, by tier**: Premium → Plus → Starter
+3. **Within same day + same tier**: most recently published first
+
+The homepage date dividers also use `publishedAt` (with `createdAt` fallback) to group jobs by the day they went live.
 
 This is the core value proposition for higher tiers — paid listings get priority placement within their day's group.
 
