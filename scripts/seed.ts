@@ -1,7 +1,10 @@
 import mongoose from 'mongoose'
 import bcrypt from 'bcryptjs'
+import dotenv from 'dotenv'
 import { SchoolAdmin } from '../models/SchoolAdmin'
 import { JobPosting } from '../models/JobPosting'
+
+dotenv.config({ path: '.env.local' })
 
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/international-teacher-jobs'
 
