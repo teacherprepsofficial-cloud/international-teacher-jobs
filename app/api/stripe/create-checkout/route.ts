@@ -15,39 +15,59 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Price ID not configured' }, { status: 500 })
     }
 
-    const authToken = await getAuthCookie()
-    if (!authToken) {
-      return NextResponse.json({ error: 'Not authenticated' }, { status: 401 })
-    }
-
-    const payload = verifyToken(authToken)
-    if (!payload) {
-      return NextResponse.json({ error: 'Invalid token' }, { status: 401 })
-    }
-
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://international-teacher-jobs.vercel.app'
 
-    const session = await stripe.checkout.sessions.create({
+    // Check if school admin is logged in (optional — works for both logged-in and anonymous)
+    let adminId: string | undefined
+    let email: string | undefined
+
+    const authToken = await getAuthCookie()
+    if (authToken) {
+      const payload = verifyToken(authToken)
+      if (payload) {
+        adminId = payload.adminId
+        email = payload.email
+      }
+    }
+
+    const sessionParams: any = {
       payment_method_types: ['card'],
       mode: 'subscription',
-      customer_email: payload.email,
-      line_items: [
-        {
-          price: priceId,
-          quantity: 1,
-        },
-      ],
-      success_url: `${baseUrl}/school/dashboard?checkout=success`,
+      line_items: [{ price: priceId, quantity: 1 }],
+      success_url: `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${baseUrl}/pricing`,
-      metadata: {
-        tier,
-        adminId: payload.adminId,
-      },
-    })
+      metadata: { tier },
+    }
 
-    return NextResponse.json({ sessionId: session.id })
-  } catch (error) {
-    console.error('Checkout error:', error)
+    // If logged in, attach admin info
+    if (adminId) {
+      sessionParams.metadata.adminId = adminId
+    }
+    if (email) {
+      sessionParams.customer_email = email
+    }
+
+    // For new schools: collect email + school name via Stripe's custom fields
+    if (!adminId) {
+      sessionParams.custom_fields = [
+        {
+          key: 'school_name',
+          label: { type: 'custom', custom: 'School Name' },
+          type: 'text',
+        },
+        {
+          key: 'contact_name',
+          label: { type: 'custom', custom: 'Your Name' },
+          type: 'text',
+        },
+      ]
+    }
+
+    const session = await stripe.checkout.sessions.create(sessionParams)
+
+    return NextResponse.json({ url: session.url })
+  } catch (error: any) {
+    console.error('Checkout error:', error?.message || error)
     return NextResponse.json({ error: 'Failed to create checkout session' }, { status: 500 })
   }
 }

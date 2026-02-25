@@ -2,9 +2,6 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { loadStripe } from '@stripe/stripe-js'
-
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '')
 
 const PLANS = [
   {
@@ -63,9 +60,12 @@ export default function PricingPage() {
         body: JSON.stringify({ tier }),
       })
 
-      const { sessionId } = await response.json()
-      const stripe = await stripePromise
-      await stripe?.redirectToCheckout({ sessionId })
+      const data = await response.json()
+      if (data.url) {
+        window.location.href = data.url
+      } else {
+        alert(data.error || 'Failed to start checkout. Please try again.')
+      }
     } catch (error) {
       console.error('Checkout failed:', error)
       alert('Failed to start checkout. Please try again.')
