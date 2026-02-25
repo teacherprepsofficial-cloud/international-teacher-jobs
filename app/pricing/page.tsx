@@ -16,7 +16,7 @@ const PLANS = [
       'Up to 3 active job listings',
       'Standard positioning',
       'School profile',
-      '30-day active postings',
+      'Best for smaller schools',
     ],
   },
   {
