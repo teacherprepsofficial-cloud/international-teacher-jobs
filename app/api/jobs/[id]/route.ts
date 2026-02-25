@@ -1,5 +1,6 @@
 import { connectDB } from '@/lib/db'
 import { JobPosting } from '@/models/JobPosting'
+import '@/models/SchoolAdmin'
 import { NextRequest, NextResponse } from 'next/server'
 
 export const dynamic = 'force-dynamic'
