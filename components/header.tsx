@@ -11,7 +11,7 @@ export default function Header() {
     <header className="border-b border-card-border bg-card-bg">
       <div className="container mx-auto flex items-center justify-between px-4 py-4">
         <Link href="/" className="text-lg font-bold text-text-primary">
-          International<br/>Teacher Jobs
+          International Teacher Jobs
         </Link>
 
         <nav className="flex gap-4">
