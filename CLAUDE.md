@@ -43,8 +43,16 @@ When rewriting, we can rephrase for clarity and consistency, but the FACTS (scho
 ## Deployment
 - GitHub: `teacherprepsofficial-cloud/international-teacher-jobs` (private)
 - Vercel auto-deploys from `main` branch
-- Live URL: https://international-teacher-jobs.vercel.app
+- **Live URL: https://internationalteacherjobs.com** (custom domain, DNS at HostGator → Vercel)
+- Also accessible at: https://international-teacher-jobs.vercel.app (Vercel default)
 - Vercel token: stored in memory (not in repo)
+
+## Domain & DNS (Added 2026-02-25)
+- **Registrar**: HostGator (DNS managed there)
+- **A record**: `@` → `76.76.21.21` (Vercel)
+- **CNAME**: `www` → `cname.vercel-dns.com` (Vercel)
+- **MX, SPF, DKIM, DMARC**: Managed at HostGator (for email)
+- SSL: Auto-provisioned by Vercel
 
 ## Design
 - Terminal/monospace aesthetic — JetBrains Mono font
