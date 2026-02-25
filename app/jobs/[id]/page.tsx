@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useParams } from 'next/navigation'
+import { useParams, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { COUNTRIES } from '@/lib/countries'
 
@@ -23,7 +23,9 @@ interface Job {
 
 export default function JobDetailPage() {
   const params = useParams()
+  const searchParams = useSearchParams()
   const jobId = params.id as string
+  const isPreview = searchParams.get('preview') === 'true'
   const [job, setJob] = useState<Job | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -31,7 +33,8 @@ export default function JobDetailPage() {
   useEffect(() => {
     const fetchJob = async () => {
       try {
-        const response = await fetch(`/api/jobs/${jobId}`)
+        const url = isPreview ? `/api/jobs/${jobId}?preview=true` : `/api/jobs/${jobId}`
+        const response = await fetch(url)
         if (!response.ok) {
           setError('Job not found')
           setLoading(false)
@@ -79,6 +82,12 @@ export default function JobDetailPage() {
       <Link href="/" className="text-accent-blue hover:underline text-sm mb-6 block">
         ← Back to Job Board
       </Link>
+
+      {isPreview && (
+        <div className="mb-4 p-3 bg-yellow-50 border border-yellow-300 rounded text-yellow-800 text-sm font-semibold text-center">
+          PREVIEW — This listing is pending approval and not yet public
+        </div>
+      )}
 
       <div className="bg-card-bg border border-card-border rounded-[15px] p-8">
         {/* Header */}

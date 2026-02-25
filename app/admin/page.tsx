@@ -254,7 +254,14 @@ export default function AdminPage() {
                 <div className="flex items-start justify-between mb-3">
                   <div>
                     <div className="flex items-center gap-2">
-                      <h3 className="font-bold">{job.position}</h3>
+                      <a
+                        href={`/jobs/${job._id}?preview=true`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-bold text-blue-700 hover:underline"
+                      >
+                        {job.position}
+                      </a>
                       {job.isAutoCrawled && (
                         <span className="inline-block px-1.5 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-700 tracking-wide">
                           AUTO

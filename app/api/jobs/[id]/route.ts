@@ -5,13 +5,21 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export const dynamic = 'force-dynamic'
 
-export async function GET(_request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     await connectDB()
 
+    const { searchParams } = new URL(request.url)
+    const isPreview = searchParams.get('preview') === 'true'
+
     const job = await JobPosting.findById(params.id).populate('adminId', 'schoolName')
 
-    if (!job || job.status !== 'live') {
+    if (!job) {
+      return NextResponse.json({ error: 'Job not found' }, { status: 404 })
+    }
+
+    // Allow preview of any status; otherwise only show live jobs
+    if (!isPreview && job.status !== 'live') {
       return NextResponse.json({ error: 'Job not found' }, { status: 404 })
     }
 
