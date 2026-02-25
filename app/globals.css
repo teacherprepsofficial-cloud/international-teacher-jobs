@@ -10,25 +10,39 @@
   box-sizing: border-box;
 }
 
+/* Native app feel */
+html {
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+  scroll-behavior: smooth;
+}
+
 body {
   font-family: 'JetBrains Mono', 'Courier New', monospace;
   background-color: #f4f4f4;
   color: #1a1a1a;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overscroll-behavior-y: none;
 }
 
 button {
   font-family: inherit;
+  -webkit-tap-highlight-color: transparent;
 }
 
 input,
 select,
 textarea {
   font-family: inherit;
+  font-size: 16px; /* Prevents iOS zoom on focus */
 }
 
-/* Pill button base style */
+/* Pill button base style — 44px min touch target */
 .btn-pill {
-  @apply rounded-full px-4 py-2 font-semibold transition-all duration-200 hover:scale-[1.03];
+  @apply rounded-full px-5 py-2.5 font-semibold transition-all duration-200 hover:scale-[1.03];
+  min-height: 44px;
+  touch-action: manipulation;
 }
 
 .btn-primary {
@@ -43,9 +57,35 @@ textarea {
   @apply btn-pill border-2 border-accent-blue text-accent-blue hover:bg-blue-50;
 }
 
+/* Active press states for native feel */
+@media (hover: none) {
+  .btn-pill:active {
+    transform: scale(0.97);
+    opacity: 0.9;
+  }
+  .btn-pill:hover {
+    transform: none;
+  }
+  .job-card:active {
+    transform: scale(0.99);
+    opacity: 0.95;
+  }
+  .job-card:hover {
+    box-shadow: none;
+  }
+}
+
 /* Job card base style */
 .job-card {
-  @apply rounded-[15px] border border-card-border bg-card-bg px-6 py-4 transition-shadow hover:shadow-md;
+  @apply rounded-[15px] border border-card-border bg-card-bg transition-all duration-150;
+  padding: 1rem 1.25rem;
+  touch-action: manipulation;
+}
+
+@media (min-width: 640px) {
+  .job-card {
+    padding: 1rem 1.5rem;
+  }
 }
 
 .job-card.premium {
@@ -56,7 +96,45 @@ textarea {
   @apply border-l-4 border-l-featured;
 }
 
-/* Select dropdown styling */
+/* Select dropdown styling — 44px min height */
 select {
-  @apply rounded-full border border-card-border bg-white px-4 py-2 font-mono text-sm;
+  @apply rounded-full border border-card-border bg-white px-4 font-mono text-sm;
+  min-height: 44px;
+  padding-top: 0.625rem;
+  padding-bottom: 0.625rem;
+  touch-action: manipulation;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.75rem center;
+  background-repeat: no-repeat;
+  background-size: 1.25em 1.25em;
+  padding-right: 2.5rem;
+}
+
+/* Safe area padding for notched devices */
+@supports (padding: env(safe-area-inset-bottom)) {
+  footer {
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+  }
+}
+
+/* Smooth scrolling containers */
+.scroll-container {
+  -webkit-overflow-scrolling: touch;
+  overflow-y: auto;
+}
+
+/* Loading skeleton pulse */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Prevent pull-to-refresh on mobile in certain areas */
+.no-overscroll {
+  overscroll-behavior: none;
 }

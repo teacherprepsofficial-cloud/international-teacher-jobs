@@ -2,17 +2,17 @@ import Link from 'next/link'
 
 export default function ContactPage() {
   return (
-    <div className="container mx-auto px-4 py-12 max-w-2xl">
-      <h1 className="text-3xl font-bold mb-4">Contact Us</h1>
-      <p className="text-text-muted mb-8">
+    <div className="container mx-auto px-4 py-6 md:py-12 max-w-2xl">
+      <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4">Contact Us</h1>
+      <p className="text-text-muted mb-4 md:mb-8">
         Have a question about posting jobs, your subscription, or anything else? We'd love to hear from you.
       </p>
 
-      <div className="border border-card-border rounded-[15px] bg-card-bg p-8">
+      <div className="border border-card-border rounded-[15px] bg-card-bg p-5 sm:p-8">
         <div className="space-y-6">
           <div>
             <h2 className="text-lg font-bold mb-2">Email</h2>
-            <a href="mailto:hello@internationalteacherjobs.com" className="text-accent-blue hover:underline text-lg">
+            <a href="mailto:hello@internationalteacherjobs.com" className="text-accent-blue hover:underline text-base sm:text-lg break-all">
               hello@internationalteacherjobs.com
             </a>
           </div>

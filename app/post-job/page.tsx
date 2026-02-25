@@ -106,8 +106,8 @@ export default function PostJobPage() {
   const atLimit = liveCount >= tierLimit
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-2xl">
-      <h1 className="text-3xl font-bold mb-2">Post a Job</h1>
+    <div className="container mx-auto px-4 py-4 md:py-8 max-w-2xl">
+      <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2">Post a Job</h1>
 
       {/* Slot counter */}
       <p className="text-sm text-text-muted mb-6">
@@ -127,7 +127,7 @@ export default function PostJobPage() {
       {error && <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded text-red-800">{error}</div>}
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-semibold mb-2">School Name *</label>
             <input
@@ -153,7 +153,7 @@ export default function PostJobPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-semibold mb-2">Country *</label>
             <select
@@ -204,7 +204,7 @@ export default function PostJobPage() {
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-semibold mb-2">Category *</label>
             <select
@@ -238,7 +238,7 @@ export default function PostJobPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-semibold mb-2">Start Date *</label>
             <input

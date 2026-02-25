@@ -137,11 +137,11 @@ export default function SchoolDashboard() {
   const usagePercent = tierLimit > 0 ? Math.round((liveCount / tierLimit) * 100) : 0
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
+    <div className="container mx-auto px-4 py-4 md:py-8 max-w-4xl">
       {/* Header */}
-      <div className="flex items-start justify-between mb-8">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-4 md:mb-8">
         <div>
-          <h1 className="text-3xl font-bold mb-1">{admin.schoolName}</h1>
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-1">{admin.schoolName}</h1>
           <p className="text-text-muted">Welcome back, {admin.name}</p>
         </div>
         <span className={`text-xs font-bold px-3 py-1.5 rounded-full ${TIER_COLORS[tier] || TIER_COLORS.basic}`}>
@@ -150,7 +150,7 @@ export default function SchoolDashboard() {
       </div>
 
       {/* Usage Bar */}
-      <div className="bg-card-bg border border-card-border rounded-[15px] p-5 mb-8">
+      <div className="bg-card-bg border border-card-border rounded-[15px] p-3 sm:p-5 mb-4 md:mb-8">
         <div className="flex items-center justify-between mb-2">
           <p className="text-sm font-semibold">
             Active Listings: {liveCount} of {tierLimit}
@@ -170,7 +170,7 @@ export default function SchoolDashboard() {
       </div>
 
       {/* Post New Job Button */}
-      <div className="mb-8">
+      <div className="mb-4 md:mb-8">
         {atLimit ? (
           <div className="flex items-center gap-3">
             <button disabled className="btn-primary opacity-50 cursor-not-allowed text-sm">
@@ -204,8 +204,8 @@ export default function SchoolDashboard() {
       ) : (
         <div className="space-y-4">
           {jobs.map((job) => (
-            <div key={job._id} className="bg-card-bg border border-card-border rounded-[15px] p-5">
-              <div className="flex items-start justify-between">
+            <div key={job._id} className="bg-card-bg border border-card-border rounded-[15px] p-3 sm:p-5">
+              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
                 <div className="flex-1">
                   <h3 className="font-bold mb-1">{job.position}</h3>
                   <p className="text-sm text-text-muted mb-2">
@@ -226,7 +226,7 @@ export default function SchoolDashboard() {
                 </div>
 
                 {job.status === 'live' && (
-                  <div className="flex gap-2 ml-4">
+                  <div className="flex gap-2">
                     <button
                       onClick={() => handleStartEdit(job)}
                       className="text-xs text-accent-blue hover:underline"

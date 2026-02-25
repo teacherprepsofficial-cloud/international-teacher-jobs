@@ -35,9 +35,9 @@ export default function EmailOptin() {
   }
 
   return (
-    <div className="bg-card-bg border border-card-border rounded-[15px] p-5">
-      <h3 className="text-sm font-bold mb-2">Get International Teacher Jobs sent to you each week!</h3>
-      <p className="text-xs text-text-muted mb-4">
+    <div className="bg-card-bg border border-card-border rounded-[15px] p-4 sm:p-5">
+      <h3 className="text-sm font-bold mb-1.5 sm:mb-2">Get International Teacher Jobs sent to you each week!</h3>
+      <p className="text-xs text-text-muted mb-3 sm:mb-4">
         New listings delivered every Thursday. Free. Unsubscribe anytime.
       </p>
 
@@ -46,19 +46,19 @@ export default function EmailOptin() {
           {message}
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="space-y-3">
+        <form onSubmit={handleSubmit} className="space-y-2.5 sm:space-y-3">
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Your email address"
             required
-            className="w-full px-4 py-2 border border-card-border rounded-full text-sm"
+            className="w-full px-4 py-2.5 border border-card-border rounded-full text-sm"
           />
           <button
             type="submit"
             disabled={status === 'loading'}
-            className="w-full rounded-full bg-text-primary text-white font-semibold py-2 text-sm transition-all duration-200 hover:scale-[1.03] disabled:opacity-50"
+            className="w-full rounded-full bg-text-primary text-white font-semibold py-2.5 text-sm transition-all duration-200 hover:scale-[1.03] disabled:opacity-50 min-h-[44px]"
           >
             {status === 'loading' ? 'Subscribing...' : 'Subscribe Now'}
           </button>

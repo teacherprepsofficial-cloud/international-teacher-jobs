@@ -43,24 +43,24 @@ export default function EmailOptinBanner() {
 
   return (
     <div className="border-t border-card-border bg-card-bg">
-      <div className="container mx-auto px-4 py-6">
+      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6">
         {status === 'success' ? (
           <p className="text-center text-sm text-green-700">{message}</p>
         ) : (
-          <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row items-center justify-center gap-3">
-            <span className="text-sm font-semibold">Get new jobs delivered weekly!</span>
+          <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row items-center justify-center gap-2.5 sm:gap-3">
+            <span className="text-xs sm:text-sm font-semibold text-center">Get new jobs delivered weekly!</span>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Your email address"
               required
-              className="px-4 py-2 border border-card-border rounded-full text-sm w-full sm:w-64"
+              className="px-4 py-2.5 border border-card-border rounded-full text-sm w-full sm:w-64 min-h-[44px]"
             />
             <button
               type="submit"
               disabled={status === 'loading'}
-              className="rounded-full bg-text-primary text-white font-semibold px-6 py-2 text-sm transition-all duration-200 hover:scale-[1.03] disabled:opacity-50 whitespace-nowrap"
+              className="rounded-full bg-text-primary text-white font-semibold px-6 py-2.5 text-sm transition-all duration-200 hover:scale-[1.03] disabled:opacity-50 whitespace-nowrap w-full sm:w-auto min-h-[44px]"
             >
               {status === 'loading' ? 'Subscribing...' : 'Subscribe Now'}
             </button>

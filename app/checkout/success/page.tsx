@@ -17,9 +17,9 @@ function SuccessContent() {
   }, [sessionId, router])
 
   return (
-    <div className="container mx-auto px-4 py-12 text-center max-w-md">
-      <div className="bg-green-50 border-2 border-green-200 rounded-[15px] p-8">
-        <div className="text-5xl mb-4">✓</div>
+    <div className="container mx-auto px-4 py-6 md:py-12 text-center max-w-md">
+      <div className="bg-green-50 border-2 border-green-200 rounded-[15px] p-5 sm:p-8">
+        <div className="text-4xl sm:text-5xl mb-4">✓</div>
         <h1 className="text-2xl font-bold mb-2">Payment Successful!</h1>
         <p className="text-text-muted mb-2">
           Your subscription is active.

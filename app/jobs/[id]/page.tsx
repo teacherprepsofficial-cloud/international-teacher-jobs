@@ -57,15 +57,24 @@ export default function JobDetailPage() {
 
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="text-center text-text-muted">Loading...</div>
+      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8 max-w-3xl">
+        <div className="bg-card-bg border border-card-border rounded-[15px] p-4 sm:p-8 animate-pulse">
+          <div className="h-6 bg-gray-200 rounded w-3/4 mb-4" />
+          <div className="h-4 bg-gray-200 rounded w-1/2 mb-8" />
+          <div className="grid grid-cols-2 gap-4 mb-8">
+            {[...Array(4)].map((_, i) => (
+              <div key={i}><div className="h-3 bg-gray-200 rounded w-1/2 mb-2" /><div className="h-4 bg-gray-200 rounded w-3/4" /></div>
+            ))}
+          </div>
+          <div className="space-y-2">{[...Array(6)].map((_, i) => <div key={i} className="h-3 bg-gray-200 rounded" />)}</div>
+        </div>
       </div>
     )
   }
 
   if (error || !job) {
     return (
-      <div className="container mx-auto px-4 py-8 text-center">
+      <div className="container mx-auto px-3 sm:px-4 py-8 text-center">
         <p className="text-text-muted mb-4">{error || 'Job not found'}</p>
         <Link href="/" className="btn-secondary">
           Back to Job Board
@@ -78,8 +87,8 @@ export default function JobDetailPage() {
   const emoji = countryInfo?.emoji || '🌍'
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-3xl">
-      <Link href="/" className="text-accent-blue hover:underline text-sm mb-6 block">
+    <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-8 max-w-3xl">
+      <Link href="/" className="inline-flex items-center text-accent-blue hover:underline text-sm mb-4 sm:mb-6 py-1">
         ← Back to Job Board
       </Link>
 
@@ -89,14 +98,14 @@ export default function JobDetailPage() {
         </div>
       )}
 
-      <div className="bg-card-bg border border-card-border rounded-[15px] p-8">
+      <div className="bg-card-bg border border-card-border rounded-[15px] p-4 sm:p-6 md:p-8">
         {/* Header */}
-        <div className="mb-6">
-          <div className="flex items-start gap-3 mb-3">
-            <span className="text-3xl">{emoji}</span>
-            <div>
-              <h1 className="text-3xl font-bold mb-2">{job.position}</h1>
-              <p className="text-lg text-text-muted">
+        <div className="mb-5 sm:mb-6">
+          <div className="flex items-start gap-2.5 sm:gap-3 mb-3">
+            <span className="text-2xl sm:text-3xl mt-0.5">{emoji}</span>
+            <div className="min-w-0">
+              <h1 className="text-lg sm:text-2xl md:text-3xl font-bold mb-1 sm:mb-2 break-words">{job.position}</h1>
+              <p className="text-sm sm:text-lg text-text-muted">
                 {job.schoolName} · {job.city}, {job.country}
               </p>
             </div>
@@ -104,45 +113,59 @@ export default function JobDetailPage() {
         </div>
 
         {/* Quick Info */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 pb-8 border-b border-card-border">
-          <div>
-            <p className="text-xs text-text-muted font-semibold mb-1">Contract Type</p>
-            <p className="font-semibold">{job.contractType}</p>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8 pb-6 sm:pb-8 border-b border-card-border">
+          <div className="bg-bg rounded-lg p-2.5 sm:p-3">
+            <p className="text-[10px] sm:text-xs text-text-muted font-semibold mb-0.5 sm:mb-1">Contract</p>
+            <p className="font-semibold text-xs sm:text-sm">{job.contractType}</p>
           </div>
-          <div>
-            <p className="text-xs text-text-muted font-semibold mb-1">Start Date</p>
-            <p className="font-semibold">{job.startDate}</p>
+          <div className="bg-bg rounded-lg p-2.5 sm:p-3">
+            <p className="text-[10px] sm:text-xs text-text-muted font-semibold mb-0.5 sm:mb-1">Start Date</p>
+            <p className="font-semibold text-xs sm:text-sm">{job.startDate}</p>
           </div>
-          <div>
-            <p className="text-xs text-text-muted font-semibold mb-1">Category</p>
-            <p className="font-semibold capitalize">{job.positionCategory.replace('-', ' ')}</p>
+          <div className="bg-bg rounded-lg p-2.5 sm:p-3">
+            <p className="text-[10px] sm:text-xs text-text-muted font-semibold mb-0.5 sm:mb-1">Category</p>
+            <p className="font-semibold text-xs sm:text-sm capitalize">{job.positionCategory.replace('-', ' ')}</p>
           </div>
           {job.salary && (
-            <div>
-              <p className="text-xs text-text-muted font-semibold mb-1">Salary</p>
-              <p className="font-semibold">{job.salary}</p>
+            <div className="bg-bg rounded-lg p-2.5 sm:p-3">
+              <p className="text-[10px] sm:text-xs text-text-muted font-semibold mb-0.5 sm:mb-1">Salary</p>
+              <p className="font-semibold text-xs sm:text-sm">{job.salary}</p>
             </div>
           )}
         </div>
 
         {/* Description */}
-        <div className="mb-8">
-          <h2 className="text-lg font-bold mb-3">Position Details</h2>
-          <p className="text-text-muted whitespace-pre-wrap leading-relaxed">{job.description}</p>
+        <div className="mb-6 sm:mb-8">
+          <h2 className="text-base sm:text-lg font-bold mb-3">Position Details</h2>
+          <p className="text-sm sm:text-base text-text-muted whitespace-pre-wrap leading-relaxed break-words">{job.description}</p>
         </div>
 
-        {/* Apply Button */}
-        <div>
+        {/* Apply Button — sticky on mobile */}
+        <div className="hidden sm:block">
           <a href={job.applicationUrl} target="_blank" rel="noopener noreferrer" className="btn-primary w-full block text-center">
             Apply Now
           </a>
         </div>
 
         {/* Footer */}
-        <div className="mt-8 pt-8 border-t border-card-border text-xs text-text-muted text-center">
+        <div className="mt-6 sm:mt-8 pt-6 sm:pt-8 border-t border-card-border text-xs text-text-muted text-center">
           <p>Posted on {new Date(job.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
         </div>
       </div>
+
+      {/* Mobile sticky apply button */}
+      <div className="sm:hidden fixed bottom-0 left-0 right-0 p-3 bg-card-bg/95 backdrop-blur-md border-t border-card-border z-30">
+        <a
+          href={job.applicationUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="btn-primary w-full block text-center text-sm"
+        >
+          Apply Now
+        </a>
+      </div>
+      {/* Spacer for sticky button */}
+      <div className="sm:hidden h-16" />
     </div>
   )
 }

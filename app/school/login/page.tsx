@@ -37,8 +37,8 @@ export default function SchoolLoginPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-12 max-w-md">
-      <div className="bg-card-bg border border-card-border rounded-[15px] p-8">
+    <div className="container mx-auto px-4 py-6 md:py-12 max-w-md">
+      <div className="bg-card-bg border border-card-border rounded-[15px] p-5 sm:p-8">
         <h1 className="text-2xl font-bold mb-6 text-center">School Admin Login</h1>
 
         {error && <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded text-red-800 text-sm">{error}</div>}

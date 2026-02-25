@@ -195,11 +195,11 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">Admin Panel</h1>
+    <div className="container mx-auto px-4 py-4 md:py-8">
+      <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 md:mb-8">Admin Panel</h1>
 
       {/* Crawler Controls */}
-      <div className="bg-card-bg border border-card-border rounded-[15px] p-6 mb-6">
+      <div className="bg-card-bg border border-card-border rounded-[15px] p-3 sm:p-4 md:p-6 mb-6">
         <h2 className="text-xl font-bold mb-4">Job Crawler</h2>
         <div className="flex gap-3 mb-4">
           <button
@@ -227,7 +227,7 @@ export default function AdminPage() {
             <h3 className="text-sm font-semibold mb-2 text-text-muted">Recent Runs</h3>
             <div className="space-y-2">
               {crawlHistory.slice(0, 5).map((run) => (
-                <div key={run._id} className="flex items-center justify-between text-sm border border-card-border rounded p-2">
+                <div key={run._id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-2 text-sm border border-card-border rounded p-2">
                   <div className="flex items-center gap-2">
                     <span className={`inline-block px-2 py-0.5 rounded text-xs font-mono ${
                       run.type === 'crawl' ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-800'
@@ -257,27 +257,27 @@ export default function AdminPage() {
 
       {/* Email Subscribers */}
       {subStats && (
-        <div className="bg-card-bg border border-card-border rounded-[15px] p-6 mb-6">
+        <div className="bg-card-bg border border-card-border rounded-[15px] p-3 sm:p-4 md:p-6 mb-6">
           <h2 className="text-xl font-bold mb-4">Email Subscribers</h2>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 mb-4">
             <div className="border border-card-border rounded p-3 text-center">
-              <div className="text-2xl font-bold">{subStats.confirmed}</div>
+              <div className="text-lg sm:text-2xl font-bold">{subStats.confirmed}</div>
               <div className="text-xs text-text-muted">Active</div>
             </div>
             <div className="border border-card-border rounded p-3 text-center">
-              <div className="text-2xl font-bold">{subStats.pending}</div>
+              <div className="text-lg sm:text-2xl font-bold">{subStats.pending}</div>
               <div className="text-xs text-text-muted">Pending</div>
             </div>
             <div className="border border-card-border rounded p-3 text-center">
-              <div className="text-2xl font-bold">{subStats.unsubscribed}</div>
+              <div className="text-lg sm:text-2xl font-bold">{subStats.unsubscribed}</div>
               <div className="text-xs text-text-muted">Unsubscribed</div>
             </div>
             <div className="border border-card-border rounded p-3 text-center">
-              <div className="text-2xl font-bold">{subStats.total}</div>
+              <div className="text-lg sm:text-2xl font-bold">{subStats.total}</div>
               <div className="text-xs text-text-muted">All Time</div>
             </div>
             <div className="border border-card-border rounded p-3 text-center">
-              <div className="text-2xl font-bold">{subStats.totalClicks}</div>
+              <div className="text-lg sm:text-2xl font-bold">{subStats.totalClicks}</div>
               <div className="text-xs text-text-muted">Total Clicks</div>
             </div>
           </div>
@@ -321,7 +321,7 @@ export default function AdminPage() {
       )}
 
       {/* Pending Jobs */}
-      <div className="bg-card-bg border border-card-border rounded-[15px] p-6">
+      <div className="bg-card-bg border border-card-border rounded-[15px] p-3 sm:p-4 md:p-6">
         <h2 className="text-xl font-bold mb-4">Pending Review ({jobs.length})</h2>
 
         {loading ? (
@@ -331,8 +331,8 @@ export default function AdminPage() {
         ) : (
           <div className="space-y-4">
             {jobs.map((job) => (
-              <div key={job._id} className="border border-card-border rounded p-4">
-                <div className="flex items-start justify-between mb-3">
+              <div key={job._id} className="border border-card-border rounded p-3 sm:p-4">
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-3">
                   <div>
                     <div className="flex items-center gap-2">
                       <a
