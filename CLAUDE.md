@@ -38,7 +38,7 @@ When rewriting, we can rephrase for clarity and consistency, but the FACTS (scho
 ## Database
 - Separate MongoDB Atlas cluster from TeacherPreps — completely independent
 - Connection via `MONGODB_URI` in `.env.local`
-- Models: SchoolAdmin, JobPosting, AdminMessage, CrawlRun
+- Models: SchoolAdmin, JobPosting, AdminMessage, CrawlRun, Subscriber, EmailClick
 
 ## Deployment
 - GitHub: `teacherprepsofficial-cloud/international-teacher-jobs` (private)
@@ -213,6 +213,67 @@ Shares the same Stripe account as TeacherPreps.com.
 | `app/api/stripe/webhook/route.ts` | Handles all Stripe webhook events |
 | `app/pricing/page.tsx` | Pricing page with 3 plans |
 | `lib/stripe.ts` | Stripe client + price ID mapping |
+
+## Email Digest System (Added 2026-02-25)
+
+### Overview
+Weekly email digest with double opt-in, click tracking, and admin dashboard. Powered by **Resend** (sending from `send.internationalteacherjobs.com`).
+
+### Architecture
+```
+User subscribes → POST /api/subscribe → creates Subscriber (status: pending) → sends confirmation email via Resend
+User confirms → GET /api/subscribe/confirm?token=X → status: confirmed
+Every Thursday 13:00 UTC (7 AM CST) → /api/cron/weekly-digest → sends digest to all confirmed subscribers
+User clicks job link in email → /api/email/click?sid=X&jid=X&d=X&url=X → logs click → redirects to job page
+User unsubscribes → GET /api/unsubscribe?token=X → status: unsubscribed (one-click)
+```
+
+### Key Files
+
+| File | Purpose |
+|------|---------|
+| `models/Subscriber.ts` | Subscriber model (email, status, confirmToken, unsubscribeToken) |
+| `models/EmailClick.ts` | Click tracking model (subscriberId, digestDate, jobId) |
+| `components/email-optin.tsx` | Sidebar opt-in (homepage) |
+| `components/email-optin-banner.tsx` | Horizontal banner opt-in (all other pages via layout) |
+| `app/api/subscribe/route.ts` | POST — create subscriber, send confirmation email |
+| `app/api/subscribe/confirm/route.ts` | GET — double opt-in confirmation |
+| `app/api/unsubscribe/route.ts` | GET — one-click unsubscribe |
+| `app/api/email/click/route.ts` | GET — click tracking redirect |
+| `app/api/cron/weekly-digest/route.ts` | Vercel cron — weekly digest (Thursday 13:00 UTC) |
+| `app/api/admin/subscribers/route.ts` | GET — admin stats, recent subscribers, click rates |
+| `lib/digest-email.ts` | HTML email templates (digest + no-jobs version) |
+
+### Resend Configuration
+- **Domain**: `send.internationalteacherjobs.com` (verified — DKIM, SPF, MX records at HostGator)
+- **From address**: `International Teacher Jobs <jobs@send.internationalteacherjobs.com>`
+- **API key**: `RESEND_API_KEY` in `.env.local` + Vercel env vars
+
+### Subscriber Statuses
+`pending` → `confirmed` → `unsubscribed`
+
+- Pending: signed up but hasn't clicked confirmation link
+- Confirmed: active subscriber, receives weekly digest
+- Unsubscribed: opted out, won't receive emails (can re-subscribe)
+
+### Admin Dashboard
+In the admin panel, the "Email Subscribers" section shows:
+- 5 stat cards: Active, Pending, Unsubscribed, All Time, Total Clicks
+- Digest click rates: clicks and unique clickers per digest date
+- Recent subscribers: last 10 with email and status badge
+
+### CAN-SPAM Compliance
+- `List-Unsubscribe` header on every email (Gmail one-click unsubscribe)
+- `List-Unsubscribe-Post: List-Unsubscribe=One-Click` header
+- Unsubscribe link in email footer
+- Double opt-in (confirmation required before receiving digests)
+
+### Digest Email Content
+- Jobs from the last 7 days (publishedAt >= 7 days ago)
+- Each job shows: school name, position, city/country, contract type, tier badge
+- Premium/Featured jobs get colored borders in email
+- "View Job" links go through click tracker for analytics
+- If zero jobs that week: "No new listings this week — check back soon!" email
 
 ## Header Navigation
 - Public nav: Contact → Pricing → School Login → Post a Job
