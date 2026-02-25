@@ -32,7 +32,7 @@ When rewriting, we can rephrase for clarity and consistency, but the FACTS (scho
 - **Next.js 14** (App Router), TypeScript
 - **MongoDB Atlas** (cluster: `international-teacher-j.kdutkod.mongodb.net`, db: `international-teacher-jobs`)
 - **Tailwind CSS** with JetBrains Mono monospace font
-- **Stripe** — 3-tier monthly subscriptions (Basic $49, Standard $99, Premium $199)
+- **Stripe** — 3-tier monthly subscriptions (Starter $99, Plus $199, Premium $299)
 - **Vercel** — hosting (project: `international-teacher-jobs`)
 
 ## Database
@@ -57,11 +57,22 @@ When rewriting, we can rephrase for clarity and consistency, but the FACTS (scho
 Admin "Approve" sets status directly to `live` (not `approved`). The public API only shows `live` jobs.
 
 ## Subscription Tiers
-| Tier | Price | Features |
-|------|-------|----------|
-| Basic | $49/mo | Standard listing |
-| Standard | $99/mo | "Featured" purple badge, higher sort |
-| Premium | $199/mo | "Premium" gold badge, pinned to top |
+| Tier | Internal Key | Price | Active Listings | Features |
+|------|-------------|-------|-----------------|----------|
+| Starter | `basic` | $99/mo | Up to 3 | Standard listing, school profile |
+| Plus | `standard` | $199/mo | Up to 10 | "Featured" purple badge, priority placement, school profile |
+| Premium | `premium` | $299/mo | Up to 20 | "Premium" gold badge, pinned to top, school profile with logo |
+
+### Posting Limits
+Enforced in `POST /api/jobs` — counts active (`status: 'live'`) jobs per admin and rejects with 403 if limit reached.
+
+```typescript
+const TIER_LIMITS: Record<string, number> = {
+  basic: 3,      // Starter $99/mo
+  standard: 10,  // Plus $199/mo
+  premium: 20,   // Premium $299/mo
+}
+```
 
 ## Job Crawler System (Added 2026-02-25)
 

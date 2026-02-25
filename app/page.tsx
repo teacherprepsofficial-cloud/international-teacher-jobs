@@ -192,6 +192,14 @@ export default function HomePage() {
           })}
         </div>
       )}
+
+      {/* School CTA */}
+      <div className="mt-12 border-t border-card-border pt-8 text-center">
+        <p className="text-sm text-text-muted mb-3">Are you an international school looking to hire?</p>
+        <Link href="/pricing" className="btn-primary text-sm">
+          View Pricing Plans
+        </Link>
+      </div>
     </div>
   )
 }
