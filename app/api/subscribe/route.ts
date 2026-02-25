@@ -55,7 +55,7 @@ async function sendConfirmationEmail(email: string, token: string) {
   const confirmUrl = `${baseUrl}/api/subscribe/confirm?token=${token}`
 
   await resend.emails.send({
-    from: 'International Teacher Jobs <jobs@send.internationalteacherjobs.com>',
+    from: 'International Teacher Jobs <hello@internationalteacherjobs.com>',
     to: email,
     subject: 'Confirm your subscription — International Teacher Jobs',
     html: `

@@ -59,7 +59,7 @@ export async function GET(request: NextRequest) {
           : 'International Teacher Jobs — Weekly Update'
 
         await resend.emails.send({
-          from: 'International Teacher Jobs <jobs@send.internationalteacherjobs.com>',
+          from: 'International Teacher Jobs <hello@internationalteacherjobs.com>',
           to: sub.email,
           subject,
           html,

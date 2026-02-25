@@ -217,7 +217,7 @@ Shares the same Stripe account as TeacherPreps.com.
 ## Email Digest System (Added 2026-02-25)
 
 ### Overview
-Weekly email digest with double opt-in, click tracking, and admin dashboard. Powered by **Resend** (sending from `send.internationalteacherjobs.com`).
+Weekly email digest with double opt-in, click tracking, and admin dashboard. Powered by **Resend** (sending from `internationalteacherjobs.com`).
 
 ### Architecture
 ```
@@ -245,8 +245,8 @@ User unsubscribes → GET /api/unsubscribe?token=X → status: unsubscribed (one
 | `lib/digest-email.ts` | HTML email templates (digest + no-jobs version) |
 
 ### Resend Configuration
-- **Domain**: `send.internationalteacherjobs.com` (verified — DKIM, SPF, MX records at HostGator)
-- **From address**: `International Teacher Jobs <jobs@send.internationalteacherjobs.com>`
+- **Domain**: `internationalteacherjobs.com` (verified in Resend — DKIM, SPF, MX records at HostGator)
+- **From address**: `International Teacher Jobs <hello@internationalteacherjobs.com>`
 - **API key**: `RESEND_API_KEY` in `.env.local` + Vercel env vars
 
 ### Subscriber Statuses
