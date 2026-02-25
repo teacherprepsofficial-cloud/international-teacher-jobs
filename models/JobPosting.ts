@@ -17,6 +17,14 @@ export interface IJobPosting extends Document {
   status: 'pending' | 'approved' | 'live' | 'correction_needed' | 'taken_down'
   publishedAt?: Date
   adminNotes?: string
+  // Crawler fields
+  sourceUrl?: string
+  sourceKey?: string
+  contentHash?: string
+  isAutoCrawled: boolean
+  lastCheckedAt?: Date
+  staleCheckFailCount: number
+  crawledAt?: Date
   createdAt: Date
   updatedAt: Date
 }
@@ -47,6 +55,14 @@ const JobPostingSchema = new Schema<IJobPosting>(
     },
     publishedAt: Date,
     adminNotes: String,
+    // Crawler fields
+    sourceUrl: String,
+    sourceKey: String,
+    contentHash: String,
+    isAutoCrawled: { type: Boolean, default: false },
+    lastCheckedAt: Date,
+    staleCheckFailCount: { type: Number, default: 0 },
+    crawledAt: Date,
   },
   { timestamps: true }
 )
@@ -54,6 +70,8 @@ const JobPostingSchema = new Schema<IJobPosting>(
 // Index for faster queries
 JobPostingSchema.index({ status: 1, countryCode: 1 })
 JobPostingSchema.index({ adminId: 1 })
+JobPostingSchema.index({ contentHash: 1 }, { unique: true, sparse: true })
+JobPostingSchema.index({ isAutoCrawled: 1, status: 1 })
 
 export const JobPosting =
   mongoose.models.JobPosting || mongoose.model<IJobPosting>('JobPosting', JobPostingSchema)
