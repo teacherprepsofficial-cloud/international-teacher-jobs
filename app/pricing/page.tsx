@@ -47,6 +47,7 @@ const PLANS = [
       'Featured status included',
     ],
     badge: 'BEST VALUE',
+    badgeColor: 'orange',
   },
 ]
 
@@ -85,13 +86,17 @@ export default function PricingPage() {
           <div
             key={plan.tier}
             className={`rounded-[15px] border-2 px-6 py-8 relative ${
-              plan.badge
-                ? 'border-accent-blue bg-blue-50'
-                : 'border-card-border bg-card-bg'
+              plan.badgeColor === 'orange'
+                ? 'border-orange-500 bg-orange-50'
+                : plan.badge
+                  ? 'border-accent-blue bg-blue-50'
+                  : 'border-card-border bg-card-bg'
             }`}
           >
             {plan.badge && (
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-accent-blue text-white text-xs font-bold px-3 py-1 rounded-full">
+              <div className={`absolute -top-3 left-1/2 -translate-x-1/2 text-white text-xs font-bold px-3 py-1 rounded-full ${
+                plan.badgeColor === 'orange' ? 'bg-orange-500' : 'bg-accent-blue'
+              }`}>
                 {plan.badge}
               </div>
             )}
@@ -106,7 +111,7 @@ export default function PricingPage() {
             <ul className="space-y-3 mb-8">
               {plan.features.map((feature) => (
                 <li key={feature} className="text-sm flex items-start gap-2">
-                  <span className="text-accent-blue font-bold mt-0.5">✓</span>
+                  <span className={`font-bold mt-0.5 ${plan.badgeColor === 'orange' ? 'text-orange-500' : 'text-accent-blue'}`}>✓</span>
                   <span>{feature}</span>
                 </li>
               ))}
@@ -116,7 +121,7 @@ export default function PricingPage() {
               onClick={() => handleCheckout(plan.tier)}
               disabled={loading === plan.tier}
               className={`w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed ${
-                plan.badge ? 'bg-accent-blue' : ''
+                plan.badgeColor === 'orange' ? 'bg-orange-500 hover:bg-orange-600' : plan.badge ? 'bg-accent-blue' : ''
               }`}
             >
               {loading === plan.tier ? 'Loading...' : 'Get Started'}
