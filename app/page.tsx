@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { getCountriesForFilter } from '@/lib/countries'
 import { getRegionsForFilter } from '@/lib/regions'
+import EmailOptin from '@/components/email-optin'
 
 interface Job {
   _id: string
@@ -128,85 +129,97 @@ export default function HomePage() {
         )}
       </div>
 
-      {/* Job Listings */}
-      {loading ? (
-        <div className="text-center text-text-muted">Loading jobs...</div>
-      ) : jobs.length === 0 ? (
-        <div className="text-center text-text-muted">No jobs found matching your criteria.</div>
-      ) : (
-        <div className="space-y-4">
-          {jobs.map((job, index) => {
-            const showDate = shouldShowDate(index)
+      {/* Main content + Sidebar */}
+      <div className="flex gap-6">
+        {/* Job Listings */}
+        <div className="flex-1 min-w-0">
+          {loading ? (
+            <div className="text-center text-text-muted">Loading jobs...</div>
+          ) : jobs.length === 0 ? (
+            <div className="text-center text-text-muted">No jobs found matching your criteria.</div>
+          ) : (
+            <div className="space-y-4">
+              {jobs.map((job, index) => {
+                const showDate = shouldShowDate(index)
 
-            return (
-              <div key={job._id}>
-                {showDate && (
-                  <div className="mb-3 flex items-center justify-between">
-                    <span className="text-xs text-text-muted font-semibold">
-                      {formatDate(getJobDate(job))}
-                    </span>
-                    {index === 0 && (
-                      <span className="text-xs font-semibold">
-                        Total Jobs: <span className="text-accent-blue">{totalLiveCount.toLocaleString()}</span>
-                      </span>
-                    )}
-                  </div>
-                )}
-                <Link href={`/jobs/${job._id}`}>
-                  <div
-                    className={`job-card ${
-                      job.subscriptionTier === 'premium'
-                        ? 'premium'
-                        : job.subscriptionTier === 'standard'
-                          ? 'featured'
-                          : ''
-                    }`}
-                  >
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-2">
-                          {job.subscriptionTier === 'premium' && (
-                            <span className="inline-block bg-premium text-xs font-bold px-2 py-1 rounded">
-                              PREMIUM
-                            </span>
-                          )}
-                          {job.subscriptionTier === 'standard' && (
-                            <span className="inline-block bg-featured text-xs font-bold px-2 py-1 rounded text-white">
-                              FEATURED
-                            </span>
-                          )}
-                          <span className="text-sm font-semibold">
-                            {job.schoolName} · {job.city}, {job.country}
+                return (
+                  <div key={job._id}>
+                    {showDate && (
+                      <div className="mb-3 flex items-center justify-between">
+                        <span className="text-xs text-text-muted font-semibold">
+                          {formatDate(getJobDate(job))}
+                        </span>
+                        {index === 0 && (
+                          <span className="text-xs font-semibold">
+                            Total Jobs: <span className="text-accent-blue">{totalLiveCount.toLocaleString()}</span>
                           </span>
-                          <span className="text-lg">{(() => {
-                            const country = countries.find((c) => c.code === job.countryCode)
-                            return country?.emoji || '🌍'
-                          })()}</span>
+                        )}
+                      </div>
+                    )}
+                    <Link href={`/jobs/${job._id}`}>
+                      <div
+                        className={`job-card ${
+                          job.subscriptionTier === 'premium'
+                            ? 'premium'
+                            : job.subscriptionTier === 'standard'
+                              ? 'featured'
+                              : ''
+                        }`}
+                      >
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-2">
+                              {job.subscriptionTier === 'premium' && (
+                                <span className="inline-block bg-premium text-xs font-bold px-2 py-1 rounded">
+                                  PREMIUM
+                                </span>
+                              )}
+                              {job.subscriptionTier === 'standard' && (
+                                <span className="inline-block bg-featured text-xs font-bold px-2 py-1 rounded text-white">
+                                  FEATURED
+                                </span>
+                              )}
+                              <span className="text-sm font-semibold">
+                                {job.schoolName} · {job.city}, {job.country}
+                              </span>
+                              <span className="text-lg">{(() => {
+                                const country = countries.find((c) => c.code === job.countryCode)
+                                return country?.emoji || '🌍'
+                              })()}</span>
+                            </div>
+                            <h3 className="text-base font-semibold mb-1">{job.position}</h3>
+                            <p className="text-sm text-text-muted">
+                              {job.contractType} · {job.startDate}
+                              {job.salary && ` · ${job.salary}`}
+                            </p>
+                          </div>
+                          <div className="text-right">
+                            <button className="btn-secondary text-xs">Learn More</button>
+                          </div>
                         </div>
-                        <h3 className="text-base font-semibold mb-1">{job.position}</h3>
-                        <p className="text-sm text-text-muted">
-                          {job.contractType} · {job.startDate}
-                          {job.salary && ` · ${job.salary}`}
-                        </p>
                       </div>
-                      <div className="text-right">
-                        <button className="btn-secondary text-xs">Learn More</button>
-                      </div>
-                    </div>
+                    </Link>
                   </div>
-                </Link>
-              </div>
-            )
-          })}
-        </div>
-      )}
+                )
+              })}
+            </div>
+          )}
 
-      {/* School CTA */}
-      <div className="mt-12 border-t border-card-border pt-8 text-center">
-        <p className="text-sm text-text-muted mb-3">Are you an international school looking to hire?</p>
-        <Link href="/pricing" className="btn-primary text-sm">
-          View Pricing Plans
-        </Link>
+          {/* School CTA */}
+          <div className="mt-12 border-t border-card-border pt-8 text-center">
+            <p className="text-sm text-text-muted mb-3">Are you an international school looking to hire?</p>
+            <Link href="/pricing" className="btn-primary text-sm">
+              View Pricing Plans
+            </Link>
+          </div>
+        </div>
+
+        {/* Sidebar — sticky email opt-in */}
+        <div className="hidden lg:block w-64 shrink-0">
+          <div className="sticky top-6">
+            <EmailOptin />
+          </div>
+        </div>
       </div>
     </div>
   )

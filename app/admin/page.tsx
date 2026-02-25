@@ -41,6 +41,9 @@ export default function AdminPage() {
   const [crawlHistory, setCrawlHistory] = useState<CrawlRun[]>([])
   const [crawlLoading, setCrawlLoading] = useState(false)
   const [crawlStatus, setCrawlStatus] = useState('')
+  const [subStats, setSubStats] = useState<any>(null)
+  const [subRecent, setSubRecent] = useState<any[]>([])
+  const [clicksByWeek, setClicksByWeek] = useState<any[]>([])
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault()
@@ -48,6 +51,7 @@ export default function AdminPage() {
       setIsAuthenticated(true)
       fetchPendingJobs()
       fetchCrawlHistory()
+      fetchSubscriberStats()
     } else {
       setError('Invalid password')
     }
@@ -73,6 +77,18 @@ export default function AdminPage() {
       setCrawlHistory(data)
     } catch (err) {
       console.error('Failed to fetch crawl history:', err)
+    }
+  }
+
+  const fetchSubscriberStats = async () => {
+    try {
+      const response = await fetch('/api/admin/subscribers')
+      const data = await response.json()
+      setSubStats(data.stats)
+      setSubRecent(data.recentSubscribers || [])
+      setClicksByWeek(data.clicksByWeek || [])
+    } catch (err) {
+      console.error('Failed to fetch subscriber stats:', err)
     }
   }
 
@@ -238,6 +254,71 @@ export default function AdminPage() {
           </div>
         )}
       </div>
+
+      {/* Email Subscribers */}
+      {subStats && (
+        <div className="bg-card-bg border border-card-border rounded-[15px] p-6 mb-6">
+          <h2 className="text-xl font-bold mb-4">Email Subscribers</h2>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4">
+            <div className="border border-card-border rounded p-3 text-center">
+              <div className="text-2xl font-bold">{subStats.confirmed}</div>
+              <div className="text-xs text-text-muted">Active</div>
+            </div>
+            <div className="border border-card-border rounded p-3 text-center">
+              <div className="text-2xl font-bold">{subStats.pending}</div>
+              <div className="text-xs text-text-muted">Pending</div>
+            </div>
+            <div className="border border-card-border rounded p-3 text-center">
+              <div className="text-2xl font-bold">{subStats.unsubscribed}</div>
+              <div className="text-xs text-text-muted">Unsubscribed</div>
+            </div>
+            <div className="border border-card-border rounded p-3 text-center">
+              <div className="text-2xl font-bold">{subStats.total}</div>
+              <div className="text-xs text-text-muted">All Time</div>
+            </div>
+            <div className="border border-card-border rounded p-3 text-center">
+              <div className="text-2xl font-bold">{subStats.totalClicks}</div>
+              <div className="text-xs text-text-muted">Total Clicks</div>
+            </div>
+          </div>
+
+          {/* Click stats by digest */}
+          {clicksByWeek.length > 0 && (
+            <div className="mb-4">
+              <h3 className="text-sm font-semibold mb-2 text-text-muted">Digest Click Rates</h3>
+              <div className="space-y-1">
+                {clicksByWeek.map((w: any) => (
+                  <div key={w.date} className="flex items-center justify-between text-sm border border-card-border rounded p-2">
+                    <span className="text-text-muted">{new Date(w.date).toLocaleDateString()}</span>
+                    <span>{w.clicks} clicks from {w.uniqueClickers} subscribers</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Recent subscribers */}
+          {subRecent.length > 0 && (
+            <div>
+              <h3 className="text-sm font-semibold mb-2 text-text-muted">Recent Subscribers</h3>
+              <div className="space-y-1">
+                {subRecent.map((sub: any) => (
+                  <div key={sub._id} className="flex items-center justify-between text-sm border border-card-border rounded p-2">
+                    <span className="font-mono text-xs">{sub.email}</span>
+                    <span className={`inline-block px-2 py-0.5 rounded text-xs font-mono ${
+                      sub.status === 'confirmed' ? 'bg-green-100 text-green-800' :
+                      sub.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                      'bg-red-100 text-red-800'
+                    }`}>
+                      {sub.status}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Pending Jobs */}
       <div className="bg-card-bg border border-card-border rounded-[15px] p-6">
