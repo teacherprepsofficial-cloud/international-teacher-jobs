@@ -4,8 +4,11 @@ import stripe from '@/lib/stripe'
 import { connectDB } from '@/lib/db'
 import { SchoolAdmin } from '@/models/SchoolAdmin'
 import { JobPosting } from '@/models/JobPosting'
+import { Resend } from 'resend'
 import bcrypt from 'bcryptjs'
 import crypto from 'crypto'
+
+const resend = new Resend(process.env.RESEND_API_KEY)
 
 export async function POST(request: NextRequest) {
   await connectDB()
@@ -79,7 +82,42 @@ export async function POST(request: NextRequest) {
               needsPasswordReset: true,
             })
             console.log(`New school admin created: ${customerEmail} → ${tier} plan (needs password setup)`)
-            // TODO: Send welcome email with password setup link
+
+            // Send welcome email with temporary password
+            const tierNames: Record<string, string> = { basic: 'Starter', standard: 'Plus', premium: 'Premium' }
+            const siteUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://internationalteacherjobs.com'
+            try {
+              await resend.emails.send({
+                from: 'International Teacher Jobs <hello@internationalteacherjobs.com>',
+                to: customerEmail,
+                subject: 'Welcome to International Teacher Jobs — Your Login Credentials',
+                html: `
+                  <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 560px; margin: 0 auto; padding: 32px 24px;">
+                    <h1 style="font-size: 24px; margin-bottom: 8px;">Welcome, ${contactName}!</h1>
+                    <p style="color: #555; font-size: 15px; line-height: 1.6;">
+                      Your <strong>${tierNames[tier] || 'Starter'}</strong> plan is active. Here are your login credentials:
+                    </p>
+
+                    <div style="background: #f4f7fa; border-radius: 8px; padding: 20px; margin: 24px 0;">
+                      <p style="margin: 0 0 8px 0; font-size: 14px;"><strong>Email:</strong> ${customerEmail}</p>
+                      <p style="margin: 0; font-size: 14px;"><strong>Temporary Password:</strong> <code style="background: #e2e8f0; padding: 2px 6px; border-radius: 4px;">${tempPassword}</code></p>
+                    </div>
+
+                    <a href="${siteUrl}/school/login" style="display: inline-block; background: #2563eb; color: #fff; padding: 12px 28px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 15px;">
+                      Log In &amp; Post Your First Job
+                    </a>
+
+                    <p style="color: #888; font-size: 13px; margin-top: 28px; line-height: 1.5;">
+                      We recommend changing your password after logging in. If you have questions, reply to this email.
+                    </p>
+                  </div>
+                `,
+              })
+              console.log(`Welcome email sent to ${customerEmail}`)
+            } catch (emailErr) {
+              console.error('Failed to send welcome email:', emailErr)
+              // Don't fail the webhook — account is created, email is best-effort
+            }
           }
         }
         break

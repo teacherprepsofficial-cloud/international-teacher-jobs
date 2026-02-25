@@ -1,11 +1,20 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 export default function Header() {
   const pathname = usePathname()
   const isSchoolRoute = pathname?.startsWith('/school')
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+
+  useEffect(() => {
+    // Lightweight auth check — don't block render
+    fetch('/api/school/me')
+      .then((res) => setIsLoggedIn(res.ok))
+      .catch(() => setIsLoggedIn(false))
+  }, [])
 
   return (
     <header className="border-b border-card-border bg-card-bg">
@@ -26,7 +35,10 @@ export default function Header() {
               <Link href="/school/login" className="text-sm text-accent-blue hover:underline">
                 School Login
               </Link>
-              <Link href="/post-job" className="btn-primary text-sm">
+              <Link
+                href={isLoggedIn ? '/school/dashboard' : '/pricing'}
+                className="btn-primary text-sm"
+              >
                 Post a Job
               </Link>
             </>

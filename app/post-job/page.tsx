@@ -8,7 +8,11 @@ import { getRegionsForFilter, getRegionForCountryCode } from '@/lib/regions'
 export default function PostJobPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
+  const [authLoading, setAuthLoading] = useState(true)
   const [error, setError] = useState('')
+  const [liveCount, setLiveCount] = useState(0)
+  const [tierLimit, setTierLimit] = useState(3)
+  const [tierName, setTierName] = useState('Starter')
   const countries = getCountriesForFilter()
   const regions = getRegionsForFilter()
 
@@ -25,6 +29,36 @@ export default function PostJobPage() {
     contractType: 'Full-time',
     startDate: '',
   })
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const meRes = await fetch('/api/school/me')
+        if (!meRes.ok) {
+          router.push('/pricing')
+          return
+        }
+        const meData = await meRes.json()
+        setFormData((prev) => ({ ...prev, schoolName: meData.schoolName || '' }))
+
+        const tierNames: Record<string, string> = { basic: 'Starter', standard: 'Plus', premium: 'Premium' }
+        setTierName(tierNames[meData.subscriptionTier] || 'Starter')
+
+        const jobsRes = await fetch('/api/school/jobs')
+        if (jobsRes.ok) {
+          const jobsData = await jobsRes.json()
+          setLiveCount(jobsData.liveCount)
+          setTierLimit(jobsData.tierLimit)
+        }
+      } catch {
+        router.push('/pricing')
+      } finally {
+        setAuthLoading(false)
+      }
+    }
+
+    checkAuth()
+  }, [router])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
@@ -49,7 +83,8 @@ export default function PostJobPage() {
       })
 
       if (!response.ok) {
-        throw new Error('Failed to post job')
+        const data = await response.json()
+        throw new Error(data.error || 'Failed to post job')
       }
 
       router.push('/school/dashboard')
@@ -60,9 +95,34 @@ export default function PostJobPage() {
     }
   }
 
+  if (authLoading) {
+    return (
+      <div className="container mx-auto px-4 py-12 text-center">
+        <p className="text-text-muted">Loading...</p>
+      </div>
+    )
+  }
+
+  const atLimit = liveCount >= tierLimit
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-2xl">
-      <h1 className="text-3xl font-bold mb-8">Post a Job</h1>
+      <h1 className="text-3xl font-bold mb-2">Post a Job</h1>
+
+      {/* Slot counter */}
+      <p className="text-sm text-text-muted mb-6">
+        {tierName} Plan · Posting {liveCount + 1} of {tierLimit}
+      </p>
+
+      {atLimit && (
+        <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded text-amber-800 text-sm">
+          You&apos;ve reached your {tierName} plan limit of {tierLimit} active listings.{' '}
+          <a href="/pricing" className="underline font-semibold">
+            Upgrade your plan
+          </a>{' '}
+          to post more jobs.
+        </div>
+      )}
 
       {error && <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded text-red-800">{error}</div>}
 
@@ -185,13 +245,12 @@ export default function PostJobPage() {
               type="date"
               name="startDateRaw"
               value={formData.startDate ? (() => {
-                // Convert stored MM/DD/YYYY back to YYYY-MM-DD for the input
                 const parts = formData.startDate.split('/')
                 if (parts.length === 3) return `${parts[2]}-${parts[0].padStart(2, '0')}-${parts[1].padStart(2, '0')}`
                 return formData.startDate
               })() : ''}
               onChange={(e) => {
-                const val = e.target.value // YYYY-MM-DD from date input
+                const val = e.target.value
                 if (val) {
                   const [y, m, d] = val.split('-')
                   setFormData((prev) => ({ ...prev, startDate: `${m}/${d}/${y}` }))
@@ -244,7 +303,11 @@ export default function PostJobPage() {
         </div>
 
         <div>
-          <button type="submit" disabled={loading} className="btn-primary w-full disabled:opacity-50">
+          <button
+            type="submit"
+            disabled={loading || atLimit}
+            className="btn-primary w-full disabled:opacity-50"
+          >
             {loading ? 'Submitting...' : 'Post Your Job'}
           </button>
         </div>
