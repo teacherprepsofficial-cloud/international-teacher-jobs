@@ -277,5 +277,62 @@ In the admin panel, the "Email Subscribers" section shows:
 
 ## Header Navigation
 - Public nav: Contact → Pricing → School Login → Post a Job
+- "Post a Job" is **auth-aware**: logged in → `/school/dashboard`, guest → `/pricing`
 - School nav (when on `/school/*`): Dashboard → Logout
 - Contact page: `/contact` (email: `hello@internationalteacherjobs.com`)
+
+## School Admin Flow (Post-a-Job)
+
+### Complete Flow
+```
+Guest clicks "Post a Job" → /pricing → Select tier → Stripe Checkout
+  → Webhook creates SchoolAdmin + sends welcome email (Resend) with temp password
+  → Redirects to /checkout/success ("Check your email for login credentials")
+  → School logs in at /school/login
+  → /school/dashboard shows: plan badge, usage bar, job list, edit/takedown
+  → "Post New Job" → /post-job (auth-gated, pre-fills school name, shows slot counter)
+```
+
+### API Endpoints
+
+| Route | Method | Auth | Purpose |
+|-------|--------|------|---------|
+| `/api/school/me` | GET | JWT cookie | Admin profile (id, email, name, schoolName, tier, status) |
+| `/api/school/jobs` | GET | JWT cookie | Admin's job postings + `tier`, `liveCount`, `tierLimit` |
+| `/api/jobs/[id]` | PATCH | JWT cookie | Update description only (ownership verified) |
+| `/api/jobs/[id]` | DELETE | JWT cookie | Take down a job (sets status to `taken_down`, ownership verified) |
+
+### School Dashboard (`/school/dashboard`)
+- Auth gate: redirects to `/school/login` if not authenticated
+- Shows plan badge (Starter/Plus/Premium) and usage bar ("2 of 3 active listings")
+- "Post New Job" button disabled with upgrade CTA when at tier limit
+- Job list: position, city/country, status badge, posted date
+- Actions: inline edit (description only), take down (with confirmation)
+- No inbox (removed for V1)
+
+### Post Job Page (`/post-job`)
+- Auth gate: redirects to `/pricing` if not authenticated
+- Pre-fills school name from admin profile
+- Shows slot counter ("Starter Plan · Posting 2 of 3")
+- Disables submit button + shows upgrade warning when at limit
+- On success → redirects to `/school/dashboard`
+
+### Edit & Moderation Rules
+- School-posted jobs go **live immediately** (no admin review)
+- Schools can ONLY edit the job description (stays live)
+- To change position, city, country, etc. → take down and re-post
+- Crawled jobs still go through pending → admin review → live (unchanged)
+- Site admin can edit/delete ANY job from admin dashboard (override)
+
+### Welcome Email (Stripe Webhook)
+- Triggered on new SchoolAdmin creation in `checkout.session.completed`
+- Sent via Resend from `hello@internationalteacherjobs.com`
+- Contains: email, temp password, "Log In & Post Your First Job" button
+- Best-effort: email failure does not fail the webhook
+
+### Tier Limits
+| Tier | Plan Name | Price | Active Listings |
+|------|-----------|-------|-----------------|
+| basic | Starter | $99/mo | 3 |
+| standard | Plus | $199/mo | 10 |
+| premium | Premium | $299/mo | 20 |
