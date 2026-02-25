@@ -1,0 +1,62 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  background-color: #f4f4f4;
+  color: #1a1a1a;
+}
+
+button {
+  font-family: inherit;
+}
+
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
+/* Pill button base style */
+.btn-pill {
+  @apply rounded-full px-4 py-2 font-semibold transition-colors;
+}
+
+.btn-primary {
+  @apply btn-pill bg-accent-red text-white hover:bg-red-700;
+}
+
+.btn-secondary {
+  @apply btn-pill bg-accent-blue text-white hover:bg-blue-700;
+}
+
+.btn-outline {
+  @apply btn-pill border-2 border-accent-blue text-accent-blue hover:bg-blue-50;
+}
+
+/* Job card base style */
+.job-card {
+  @apply rounded-[15px] border border-card-border bg-card-bg px-6 py-4 transition-shadow hover:shadow-md;
+}
+
+.job-card.premium {
+  @apply border-l-4 border-l-premium;
+}
+
+.job-card.featured {
+  @apply border-l-4 border-l-featured;
+}
+
+/* Select dropdown styling */
+select {
+  @apply rounded-full border border-card-border bg-white px-4 py-2 font-mono text-sm;
+}
