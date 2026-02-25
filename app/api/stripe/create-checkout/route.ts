@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import stripe, { STRIPE_PRICE_IDS } from '@/lib/stripe'
-import { getAuthCookie } from '@/lib/auth'
+import { getAuthCookie, verifyToken } from '@/lib/auth'
 
 export async function POST(request: NextRequest) {
   try {
@@ -15,26 +15,33 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Price ID not configured' }, { status: 500 })
     }
 
-    // TODO: Get school admin ID from auth cookie
     const authToken = await getAuthCookie()
     if (!authToken) {
       return NextResponse.json({ error: 'Not authenticated' }, { status: 401 })
     }
 
+    const payload = verifyToken(authToken)
+    if (!payload) {
+      return NextResponse.json({ error: 'Invalid token' }, { status: 401 })
+    }
+
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://international-teacher-jobs.vercel.app'
+
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       mode: 'subscription',
+      customer_email: payload.email,
       line_items: [
         {
           price: priceId,
           quantity: 1,
         },
       ],
-      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/pricing`,
+      success_url: `${baseUrl}/school/dashboard?checkout=success`,
+      cancel_url: `${baseUrl}/pricing`,
       metadata: {
         tier,
-        // TODO: Add adminId
+        adminId: payload.adminId,
       },
     })
 
