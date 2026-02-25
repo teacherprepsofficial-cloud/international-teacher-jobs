@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
 interface Job {
@@ -20,7 +19,6 @@ interface Message {
 }
 
 export default function SchoolDashboard() {
-  const router = useRouter()
   const [jobs, setJobs] = useState<Job[]>([])
   const [messages, setMessages] = useState<Message[]>([])
   const [loading, setLoading] = useState(true)

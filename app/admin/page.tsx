@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 
 interface Job {
   _id: string
@@ -13,7 +12,6 @@ interface Job {
 }
 
 export default function AdminPage() {
-  const router = useRouter()
   const [adminPassword, setAdminPassword] = useState('')
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [jobs, setJobs] = useState<Job[]>([])
