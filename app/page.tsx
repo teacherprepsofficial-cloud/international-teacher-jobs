@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { getCountriesForFilter } from '@/lib/countries'
+import { getRegionsForFilter } from '@/lib/regions'
 
 interface Job {
   _id: string
@@ -21,7 +22,7 @@ interface Job {
 }
 
 const POSITION_CATEGORIES = [
-  { value: '', label: 'All Categories' },
+  { value: '', label: 'Position' },
   { value: 'elementary', label: 'Elementary' },
   { value: 'middle-school', label: 'Middle School' },
   { value: 'high-school', label: 'High School' },
@@ -33,9 +34,11 @@ export default function HomePage() {
   const [jobs, setJobs] = useState<Job[]>([])
   const [totalLiveCount, setTotalLiveCount] = useState(0)
   const [loading, setLoading] = useState(true)
+  const [selectedRegion, setSelectedRegion] = useState('')
   const [selectedCountry, setSelectedCountry] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('')
   const countries = getCountriesForFilter()
+  const regions = getRegionsForFilter()
 
   const today = new Date().toLocaleDateString('en-US', {
     weekday: 'long',
@@ -48,6 +51,7 @@ export default function HomePage() {
     const fetchJobs = async () => {
       try {
         const params = new URLSearchParams()
+        if (selectedRegion) params.append('region', selectedRegion)
         if (selectedCountry) params.append('country', selectedCountry)
         if (selectedCategory) params.append('category', selectedCategory)
 
@@ -63,9 +67,10 @@ export default function HomePage() {
     }
 
     fetchJobs()
-  }, [selectedCountry, selectedCategory])
+  }, [selectedRegion, selectedCountry, selectedCategory])
 
   const handleClear = () => {
+    setSelectedRegion('')
     setSelectedCountry('')
     setSelectedCategory('')
   }
@@ -102,8 +107,17 @@ export default function HomePage() {
 
       {/* Filters */}
       <div className="mb-8 flex flex-wrap gap-4 items-center">
+        <select value={selectedRegion} onChange={(e) => setSelectedRegion(e.target.value)}>
+          <option value="">Region</option>
+          {regions.map((region) => (
+            <option key={region.value} value={region.value}>
+              {region.label}
+            </option>
+          ))}
+        </select>
+
         <select value={selectedCountry} onChange={(e) => setSelectedCountry(e.target.value)}>
-          <option value="">All Countries</option>
+          <option value="">Country</option>
           {countries.map((country) => (
             <option key={country.code} value={country.code}>
               {country.emoji} {country.name}
@@ -119,7 +133,7 @@ export default function HomePage() {
           ))}
         </select>
 
-        {(selectedCountry || selectedCategory) && (
+        {(selectedRegion || selectedCountry || selectedCategory) && (
           <button onClick={handleClear} className="text-sm text-accent-blue hover:underline">
             Clear Filters
           </button>

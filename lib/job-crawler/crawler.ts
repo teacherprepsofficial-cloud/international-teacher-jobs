@@ -106,6 +106,7 @@ export async function runCrawl(maxPagesOverride?: number): Promise<CrawlResult[]
               city: job.city,
               country: job.country,
               countryCode: job.countryCode,
+              region: job.region,
               position: job.position,
               positionCategory: job.positionCategory,
               description: job.description,

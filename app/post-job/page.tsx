@@ -3,17 +3,20 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { getCountriesForFilter } from '@/lib/countries'
+import { getRegionsForFilter, getRegionForCountryCode } from '@/lib/regions'
 
 export default function PostJobPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const countries = getCountriesForFilter()
+  const regions = getRegionsForFilter()
 
   const [formData, setFormData] = useState({
     schoolName: '',
     city: '',
     countryCode: '',
+    region: '',
     position: '',
     positionCategory: 'elementary',
     description: '',
@@ -25,7 +28,12 @@ export default function PostJobPage() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
+    if (name === 'countryCode') {
+      const region = value ? getRegionForCountryCode(value) : ''
+      setFormData((prev) => ({ ...prev, countryCode: value, region }))
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }))
+    }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -85,22 +93,42 @@ export default function PostJobPage() {
           </div>
         </div>
 
-        <div>
-          <label className="block text-sm font-semibold mb-2">Country *</label>
-          <select
-            name="countryCode"
-            value={formData.countryCode}
-            onChange={handleChange}
-            required
-            className="w-full px-4 py-2 border border-card-border rounded"
-          >
-            <option value="">Select a country</option>
-            {countries.map((country) => (
-              <option key={country.code} value={country.code}>
-                {country.emoji} {country.name}
-              </option>
-            ))}
-          </select>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-semibold mb-2">Country *</label>
+            <select
+              name="countryCode"
+              value={formData.countryCode}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-2 border border-card-border rounded"
+            >
+              <option value="">Select a country</option>
+              {countries.map((country) => (
+                <option key={country.code} value={country.code}>
+                  {country.emoji} {country.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold mb-2">Region *</label>
+            <select
+              name="region"
+              value={formData.region}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-2 border border-card-border rounded"
+            >
+              <option value="">Select a region</option>
+              {regions.map((region) => (
+                <option key={region.value} value={region.value}>
+                  {region.label}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
         <div>

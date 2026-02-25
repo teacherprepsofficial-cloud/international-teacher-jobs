@@ -1,5 +1,6 @@
 import * as crypto from 'crypto'
 import { CrawledJob } from './types'
+import { getRegionForCountryCode } from '@/lib/regions'
 
 // Country name → ISO code mapping for common international school locations
 const COUNTRY_CODE_MAP: Record<string, string> = {
@@ -240,6 +241,7 @@ export function parseTesNextData(html: string, baseUrl: string): CrawledJob[] {
         city,
         country,
         countryCode,
+        region: getRegionForCountryCode(countryCode),
         description,
         sourceUrl,
         sourceKey: `tes-${raw.id}`,

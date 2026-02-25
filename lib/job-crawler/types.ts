@@ -4,6 +4,7 @@ export interface CrawledJob {
   city: string
   country: string
   countryCode: string
+  region: string
   description: string
   sourceUrl: string
   sourceKey: string

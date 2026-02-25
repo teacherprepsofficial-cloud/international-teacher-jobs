@@ -6,6 +6,7 @@ export interface IJobPosting extends Document {
   city: string
   country: string
   countryCode: string
+  region?: string
   position: string
   positionCategory: 'elementary' | 'middle-school' | 'high-school' | 'admin' | 'support-staff'
   description: string
@@ -36,6 +37,7 @@ const JobPostingSchema = new Schema<IJobPosting>(
     city: { type: String, required: true },
     country: { type: String, required: true },
     countryCode: { type: String, required: true },
+    region: String,
     position: { type: String, required: true },
     positionCategory: {
       type: String,
@@ -69,6 +71,7 @@ const JobPostingSchema = new Schema<IJobPosting>(
 
 // Index for faster queries
 JobPostingSchema.index({ status: 1, countryCode: 1 })
+JobPostingSchema.index({ status: 1, region: 1 })
 JobPostingSchema.index({ adminId: 1 })
 JobPostingSchema.index({ contentHash: 1 }, { unique: true, sparse: true })
 JobPostingSchema.index({ isAutoCrawled: 1, status: 1 })

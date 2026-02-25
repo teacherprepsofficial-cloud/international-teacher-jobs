@@ -19,8 +19,10 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const country = searchParams.get('country')
     const category = searchParams.get('category')
+    const region = searchParams.get('region')
 
     const query: any = { status: 'live' }
+    if (region) query.region = region
     if (country) query.countryCode = country
     if (category) query.positionCategory = category
 
