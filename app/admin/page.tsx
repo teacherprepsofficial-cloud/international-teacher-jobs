@@ -44,6 +44,8 @@ export default function AdminPage() {
   const [subStats, setSubStats] = useState<any>(null)
   const [subRecent, setSubRecent] = useState<any[]>([])
   const [clicksByWeek, setClicksByWeek] = useState<any[]>([])
+  const [schoolStats, setSchoolStats] = useState<any>(null)
+  const [claimedSchools, setClaimedSchools] = useState<any[]>([])
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault()
@@ -52,6 +54,7 @@ export default function AdminPage() {
       fetchPendingJobs()
       fetchCrawlHistory()
       fetchSubscriberStats()
+      fetchSchoolClaims()
     } else {
       setError('Invalid password')
     }
@@ -77,6 +80,30 @@ export default function AdminPage() {
       setCrawlHistory(data)
     } catch (err) {
       console.error('Failed to fetch crawl history:', err)
+    }
+  }
+
+  const fetchSchoolClaims = async () => {
+    try {
+      const response = await fetch('/api/admin/schools?status=claimed')
+      const data = await response.json()
+      setSchoolStats(data.stats)
+      setClaimedSchools(data.schools || [])
+    } catch (err) {
+      console.error('Failed to fetch school claims:', err)
+    }
+  }
+
+  const handleSchoolAction = async (schoolId: string, action: 'approve' | 'reject') => {
+    try {
+      await fetch('/api/admin/schools', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ schoolId, action }),
+      })
+      fetchSchoolClaims()
+    } catch (err) {
+      console.error('Failed to update school:', err)
     }
   }
 
@@ -312,6 +339,67 @@ export default function AdminPage() {
                     }`}>
                       {sub.status}
                     </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* School Directory Claims */}
+      {schoolStats && (
+        <div className="bg-card-bg border border-card-border rounded-[15px] p-3 sm:p-4 md:p-6 mb-6">
+          <h2 className="text-xl font-bold mb-4">School Directory</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+            <div className="border border-card-border rounded p-3 text-center">
+              <div className="text-lg sm:text-2xl font-bold">{schoolStats.total}</div>
+              <div className="text-xs text-text-muted">Total Schools</div>
+            </div>
+            <div className="border border-card-border rounded p-3 text-center">
+              <div className="text-lg sm:text-2xl font-bold">{schoolStats.claimed}</div>
+              <div className="text-xs text-text-muted">Claimed</div>
+            </div>
+            <div className="border border-card-border rounded p-3 text-center">
+              <div className="text-lg sm:text-2xl font-bold">{schoolStats.verified}</div>
+              <div className="text-xs text-text-muted">Verified</div>
+            </div>
+            <div className="border border-card-border rounded p-3 text-center">
+              <div className="text-lg sm:text-2xl font-bold">{schoolStats.pendingClaims}</div>
+              <div className="text-xs text-text-muted">Pending Review</div>
+            </div>
+          </div>
+
+          {claimedSchools.length > 0 && (
+            <div>
+              <h3 className="text-sm font-semibold mb-2 text-text-muted">Claimed Schools</h3>
+              <div className="space-y-2">
+                {claimedSchools.map((school: any) => (
+                  <div key={school._id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border border-card-border rounded p-2">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold text-sm">{school.name}</span>
+                        {school.isVerified ? (
+                          <span className="inline-block px-1.5 py-0.5 rounded text-[10px] font-bold bg-green-100 text-green-700">VERIFIED</span>
+                        ) : (
+                          <span className="inline-block px-1.5 py-0.5 rounded text-[10px] font-bold bg-yellow-100 text-yellow-700">PENDING</span>
+                        )}
+                      </div>
+                      <p className="text-xs text-text-muted">
+                        {school.city ? `${school.city}, ` : ''}{school.country}
+                        {school.claimedBy && ` · Claimed by ${school.claimedBy.email}`}
+                      </p>
+                    </div>
+                    {!school.isVerified && (
+                      <div className="flex gap-2">
+                        <button onClick={() => handleSchoolAction(school._id, 'approve')} className="btn-secondary text-xs">
+                          Approve
+                        </button>
+                        <button onClick={() => handleSchoolAction(school._id, 'reject')} className="btn-outline text-xs">
+                          Reject
+                        </button>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>

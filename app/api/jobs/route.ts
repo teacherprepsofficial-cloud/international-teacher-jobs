@@ -1,6 +1,7 @@
 import { connectDB } from '@/lib/db'
 import { JobPosting } from '@/models/JobPosting'
 import { SchoolAdmin } from '@/models/SchoolAdmin'
+import { School } from '@/models/School'
 import { getAuthCookie, verifyToken } from '@/lib/auth'
 import { NextRequest, NextResponse } from 'next/server'
 
@@ -103,9 +104,17 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json()
 
+    // Auto-link job to school if admin has claimed one
+    let schoolId = null
+    const claimedSchool = await School.findOne({ claimedBy: admin._id }).lean() as any
+    if (claimedSchool) {
+      schoolId = claimedSchool._id
+    }
+
     const job = await JobPosting.create({
       ...body,
       adminId: admin._id,
+      schoolId,
       subscriptionTier: tier,
       status: 'live',
       publishedAt: new Date(),

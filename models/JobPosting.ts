@@ -2,6 +2,7 @@ import mongoose, { Schema, Document, Types } from 'mongoose'
 
 export interface IJobPosting extends Document {
   adminId: Types.ObjectId
+  schoolId?: Types.ObjectId
   schoolName: string
   city: string
   country: string
@@ -33,6 +34,7 @@ export interface IJobPosting extends Document {
 const JobPostingSchema = new Schema<IJobPosting>(
   {
     adminId: { type: Schema.Types.ObjectId, ref: 'SchoolAdmin', required: true },
+    schoolId: { type: Schema.Types.ObjectId, ref: 'School', default: null },
     schoolName: { type: String, required: true },
     city: { type: String, required: true },
     country: { type: String, required: true },
@@ -75,6 +77,7 @@ JobPostingSchema.index({ status: 1, region: 1 })
 JobPostingSchema.index({ adminId: 1 })
 JobPostingSchema.index({ contentHash: 1 }, { unique: true, sparse: true })
 JobPostingSchema.index({ isAutoCrawled: 1, status: 1 })
+JobPostingSchema.index({ schoolId: 1, status: 1 })
 
 export const JobPosting =
   mongoose.models.JobPosting || mongoose.model<IJobPosting>('JobPosting', JobPostingSchema)

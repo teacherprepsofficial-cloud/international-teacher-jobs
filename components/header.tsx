@@ -59,6 +59,9 @@ export default function Header() {
           <nav className="hidden md:flex items-center gap-4">
             {!isSchoolRoute && (
               <>
+                <Link href="/schools" className="text-sm text-accent-blue hover:underline">
+                  Schools
+                </Link>
                 <Link href="/contact" className="text-sm text-accent-blue hover:underline">
                   Contact
                 </Link>
@@ -110,6 +113,13 @@ export default function Header() {
         >
           {!isSchoolRoute && (
             <div className="flex flex-col px-4 pb-4">
+              <Link
+                href="/schools"
+                onClick={closeMenu}
+                className="flex items-center py-3.5 text-sm font-medium text-text-primary border-b border-card-border active:bg-gray-50 transition-colors"
+              >
+                Schools
+              </Link>
               <Link
                 href="/contact"
                 onClick={closeMenu}
