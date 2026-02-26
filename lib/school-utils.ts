@@ -55,22 +55,33 @@ export function calculateProfileCompleteness(school: Partial<ISchool>): number {
 }
 
 export const CURRICULUM_OPTIONS = [
-  'IB (International Baccalaureate)',
-  'British',
   'American',
-  'Canadian',
   'Australian',
+  'British',
+  'Canadian',
+  'Chinese',
+  'Dutch',
+  'Finnish',
   'French',
   'German',
-  'Indian (CBSE)',
-  'Indian (ICSE)',
+  'Indian',
+  'International Baccalaureate',
+  'Japanese',
   'Montessori',
-  'Waldorf / Steiner',
-  'Finnish',
-  'Singapore',
-  'National Curriculum',
-  'Bilingual',
-  'Other',
+  'New Zealand',
+  'Singaporean',
+  'South African',
+  'South Korean',
+  'Swiss',
+  'Swedish',
+  'Waldorf',
+]
+
+export const FACULTY_SIZE_OPTIONS = [
+  { value: 'small', label: 'Small (fewer than 20 teachers)' },
+  { value: 'medium', label: 'Medium (20–50 teachers)' },
+  { value: 'large', label: 'Large (51–100 teachers)' },
+  { value: 'very-large', label: 'Very Large (more than 100 teachers)' },
 ]
 
 export const ACCREDITATION_OPTIONS = [
@@ -97,6 +108,13 @@ export const SCHOOL_TYPE_LABELS: Record<string, string> = {
 
 /** Whitelist of fields a school admin can update via PATCH */
 export const UPDATABLE_PROFILE_FIELDS = [
+  // Core fields (editable by school admin)
+  'name',
+  'city',
+  'country',
+  'countryCode',
+  'region',
+  // Profile fields
   'description',
   'website',
   'logo',
@@ -104,6 +122,7 @@ export const UPDATABLE_PROFILE_FIELDS = [
   'curriculum',
   'gradeRange',
   'schoolType',
+  'facultySize',
   'studentCount',
   'foundedYear',
   'languages',

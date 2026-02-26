@@ -18,6 +18,7 @@ interface Job {
   contractType: string
   startDate: string
   salary?: string
+  logo?: string
   subscriptionTier: 'basic' | 'standard' | 'premium'
   createdAt: string
   publishedAt?: string
@@ -188,6 +189,16 @@ export default function HomePage() {
                         }`}
                       >
                         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-3">
+                          {/* Logo */}
+                          {job.logo && (
+                            <div className="shrink-0 self-start">
+                              <img
+                                src={job.logo}
+                                alt={`${job.schoolName} logo`}
+                                className="w-10 h-10 sm:w-12 sm:h-12 object-contain rounded border border-card-border bg-white"
+                              />
+                            </div>
+                          )}
                           <div className="flex-1 min-w-0">
                             <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
                               {job.subscriptionTier === 'premium' && (

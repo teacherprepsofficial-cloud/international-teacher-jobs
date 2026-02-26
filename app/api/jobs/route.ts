@@ -111,10 +111,17 @@ export async function POST(request: NextRequest) {
       schoolId = claimedSchool._id
     }
 
+    // Auto-fill logo from claimed school profile if not provided in body
+    let logo = body.logo || null
+    if (!logo && claimedSchool?.logo) {
+      logo = claimedSchool.logo
+    }
+
     const job = await JobPosting.create({
       ...body,
       adminId: admin._id,
       schoolId,
+      logo,
       subscriptionTier: tier,
       status: 'live',
       publishedAt: new Date(),

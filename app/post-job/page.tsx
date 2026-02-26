@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { getCountriesForFilter } from '@/lib/countries'
 import { getRegionsForFilter, getRegionForCountryCode } from '@/lib/regions'
@@ -13,6 +13,9 @@ export default function PostJobPage() {
   const [liveCount, setLiveCount] = useState(0)
   const [tierLimit, setTierLimit] = useState(3)
   const [tierName, setTierName] = useState('Starter')
+  const [logo, setLogo] = useState('')
+  const [logoPreview, setLogoPreview] = useState('')
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const countries = getCountriesForFilter()
   const regions = getRegionsForFilter()
 
@@ -40,6 +43,16 @@ export default function PostJobPage() {
         }
         const meData = await meRes.json()
         setFormData((prev) => ({ ...prev, schoolName: meData.schoolName || '' }))
+
+        // Pre-fill logo from claimed school profile if available
+        const profileRes = await fetch('/api/school/profile')
+        if (profileRes.ok) {
+          const profileData = await profileRes.json()
+          if (profileData.logo) {
+            setLogo(profileData.logo)
+            setLogoPreview(profileData.logo)
+          }
+        }
 
         const tierNames: Record<string, string> = { basic: 'Starter', standard: 'Plus', premium: 'Premium' }
         setTierName(tierNames[meData.subscriptionTier] || 'Starter')
@@ -70,6 +83,23 @@ export default function PostJobPage() {
     }
   }
 
+  const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    if (file.size > 500 * 1024) {
+      setError('Logo must be under 500 KB')
+      return
+    }
+    const reader = new FileReader()
+    reader.onload = (ev) => {
+      const dataUrl = ev.target?.result as string
+      setLogo(dataUrl)
+      setLogoPreview(dataUrl)
+      setError('')
+    }
+    reader.readAsDataURL(file)
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
@@ -79,7 +109,7 @@ export default function PostJobPage() {
       const response = await fetch('/api/jobs', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ ...formData, logo }),
       })
 
       if (!response.ok) {
@@ -299,6 +329,52 @@ export default function PostJobPage() {
             required
             placeholder="https://..."
             className="w-full px-4 py-2 border border-card-border rounded"
+          />
+        </div>
+
+        {/* School Logo */}
+        <div>
+          <label className="block text-sm font-semibold mb-2">School Logo (Optional)</label>
+          <div className="flex items-center gap-4">
+            {logoPreview ? (
+              <img
+                src={logoPreview}
+                alt="School logo preview"
+                className="w-14 h-14 object-contain border border-card-border rounded"
+              />
+            ) : (
+              <div className="w-14 h-14 flex items-center justify-center bg-gray-100 border border-card-border rounded text-text-muted text-xs text-center leading-tight px-1">
+                No logo
+              </div>
+            )}
+            <div>
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="btn-secondary text-sm"
+              >
+                {logoPreview ? 'Change Logo' : 'Upload Logo'}
+              </button>
+              {logoPreview && (
+                <button
+                  type="button"
+                  onClick={() => { setLogo(''); setLogoPreview('') }}
+                  className="ml-3 text-xs text-red-600 hover:underline"
+                >
+                  Remove
+                </button>
+              )}
+              <p className="text-xs text-text-muted mt-1">
+                PNG, JPG or GIF · max 500 KB · shown on job card
+              </p>
+            </div>
+          </div>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleLogoUpload}
+            className="hidden"
           />
         </div>
 

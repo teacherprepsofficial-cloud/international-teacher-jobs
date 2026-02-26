@@ -17,6 +17,7 @@ export interface ISchool extends Document {
   curriculum: string[]
   gradeRange?: string
   schoolType?: 'day' | 'boarding' | 'day-boarding' | 'online'
+  facultySize?: 'small' | 'medium' | 'large' | 'very-large'
   studentCount?: number
   foundedYear?: number
   languages: string[]
@@ -56,6 +57,7 @@ const SchoolSchema = new Schema<ISchool>(
     curriculum: { type: [String], default: [] },
     gradeRange: String,
     schoolType: { type: String, enum: ['day', 'boarding', 'day-boarding', 'online'] },
+    facultySize: { type: String, enum: ['small', 'medium', 'large', 'very-large'] },
     studentCount: Number,
     foundedYear: Number,
     languages: { type: [String], default: [] },

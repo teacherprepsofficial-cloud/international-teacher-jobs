@@ -45,6 +45,7 @@ export default function SchoolDashboard() {
   const [liveCount, setLiveCount] = useState(0)
   const [tierLimit, setTierLimit] = useState(3)
   const [loading, setLoading] = useState(true)
+  const [hasClaimedSchool, setHasClaimedSchool] = useState(false)
   const [editingJobId, setEditingJobId] = useState<string | null>(null)
   const [editDescription, setEditDescription] = useState('')
   const [saving, setSaving] = useState(false)
@@ -68,6 +69,9 @@ export default function SchoolDashboard() {
           setLiveCount(jobsData.liveCount)
           setTierLimit(jobsData.tierLimit)
         }
+
+        const profileRes = await fetch('/api/school/profile')
+        setHasClaimedSchool(profileRes.ok)
       } catch (error) {
         console.error('Failed to fetch data:', error)
         router.push('/school/login')
@@ -169,10 +173,10 @@ export default function SchoolDashboard() {
         </div>
       </div>
 
-      {/* Post New Job Button */}
-      <div className="mb-4 md:mb-8">
+      {/* Actions */}
+      <div className="mb-4 md:mb-8 flex flex-wrap items-center gap-3">
         {atLimit ? (
-          <div className="flex items-center gap-3">
+          <>
             <button disabled className="btn-primary opacity-50 cursor-not-allowed text-sm">
               Post New Job
             </button>
@@ -183,10 +187,15 @@ export default function SchoolDashboard() {
               </Link>{' '}
               to post more.
             </span>
-          </div>
+          </>
         ) : (
           <Link href="/post-job" className="btn-primary text-sm inline-block">
             Post New Job
+          </Link>
+        )}
+        {hasClaimedSchool && (
+          <Link href="/school/profile" className="btn-secondary text-sm inline-block">
+            Edit School Profile
           </Link>
         )}
       </div>

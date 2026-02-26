@@ -12,6 +12,7 @@ export interface IJobPosting extends Document {
   positionCategory: 'elementary' | 'middle-school' | 'high-school' | 'admin' | 'support-staff'
   description: string
   applicationUrl: string
+  logo?: string
   salary?: string
   contractType: 'Full-time' | 'Part-time' | 'Contract'
   startDate: string
@@ -48,6 +49,7 @@ const JobPostingSchema = new Schema<IJobPosting>(
     },
     description: { type: String, required: true },
     applicationUrl: { type: String, required: true },
+    logo: String,
     salary: String,
     contractType: { type: String, enum: ['Full-time', 'Part-time', 'Contract'], required: true },
     startDate: { type: String, required: true },
