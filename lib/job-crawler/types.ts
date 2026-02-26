@@ -12,6 +12,8 @@ export interface CrawledJob {
   contractType: 'Full-time' | 'Part-time' | 'Contract'
   startDate?: string
   positionCategory: 'elementary' | 'middle-school' | 'high-school' | 'admin' | 'support-staff'
+  // For ATS jobs we can link directly to the school record
+  schoolId?: string
 }
 
 export interface JobSource {
@@ -19,7 +21,7 @@ export interface JobSource {
   name: string
   baseUrl: string
   searchUrl: string
-  parserType: 'tes'
+  parserType: 'tes' | 'tie-online'
   maxPages: number
 }
 
@@ -39,4 +41,13 @@ export interface StaleCheckResult {
   failedChecks: number
   errors: string[]
   durationMs: number
+}
+
+// ATS discovery result for a single school
+export interface AtsDiscoveryResult {
+  schoolId: string
+  schoolName: string
+  platform: 'greenhouse' | 'lever' | 'workable'
+  slug: string
+  jobCount: number
 }

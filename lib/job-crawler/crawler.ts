@@ -2,7 +2,8 @@ import { connectDB } from '@/lib/db'
 import { JobPosting } from '@/models/JobPosting'
 import { CrawlRun } from '@/models/CrawlRun'
 import { JOB_SOURCES } from './sources'
-import { parseTesNextData, computeContentHash } from './parser'
+import { parseTesNextData, parseTieOnlineHtml, computeContentHash } from './parser'
+import { runAtsCrawl } from './ats-crawler'
 import { CrawlResult } from './types'
 
 const FETCH_TIMEOUT = 15_000 // 15 seconds
@@ -78,7 +79,10 @@ export async function runCrawl(maxPagesOverride?: number): Promise<CrawlResult[]
         }
 
         // Parse jobs from this page
-        let pageJobs = parseTesNextData(html, source.baseUrl)
+        let pageJobs =
+          source.parserType === 'tie-online'
+            ? parseTieOnlineHtml(html, source.baseUrl)
+            : parseTesNextData(html, source.baseUrl)
         console.log(`[Crawler] Page ${page}: found ${pageJobs.length} jobs`)
 
         if (pageJobs.length === 0) {
@@ -148,6 +152,22 @@ export async function runCrawl(maxPagesOverride?: number): Promise<CrawlResult[]
     result.durationMs = Date.now() - sourceStart
     results.push(result)
     console.log(`[Crawler] ${source.id}: ${result.jobsNew} new, ${result.jobsSkipped} skipped, ${result.errors.length} errors`)
+  }
+
+  // Run ATS platform crawl (Greenhouse, Lever, Workable)
+  try {
+    const atsResult = await runAtsCrawl(crawlerAdminId)
+    results.push(atsResult)
+  } catch (err: any) {
+    console.error('[ATS Crawl] Fatal error:', err.message)
+    results.push({
+      source: 'ats-platforms',
+      jobsFound: 0,
+      jobsNew: 0,
+      jobsSkipped: 0,
+      errors: [err.message],
+      durationMs: 0,
+    })
   }
 
   // Log crawl run

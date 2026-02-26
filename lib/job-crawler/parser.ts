@@ -257,3 +257,104 @@ export function parseTesNextData(html: string, baseUrl: string): CrawledJob[] {
 
   return jobs
 }
+
+// ---------------------------------------------------------------------------
+// TIE Online parser
+// tieonline.com — "The International Educator" job board
+// HTML structure: each job is in a <div class="job-listing"> block
+// We extract: title, school, location, description, URL
+// ---------------------------------------------------------------------------
+export function parseTieOnlineHtml(html: string, baseUrl: string): CrawledJob[] {
+  const jobs: CrawledJob[] = []
+
+  // TIE Online uses a JSON-LD script or __NEXT_DATA__ — try __NEXT_DATA__ first
+  // If not found, fall back to structured HTML parsing
+  const nextMatch = html.match(/<script\s+id="__NEXT_DATA__"\s+type="application\/json">([\s\S]*?)<\/script>/i)
+  if (nextMatch) {
+    try {
+      const data = JSON.parse(nextMatch[1])
+      // Try to find jobs array in common Next.js data paths
+      const pageProps = data?.props?.pageProps
+      const jobsList: any[] =
+        pageProps?.jobs ||
+        pageProps?.jobListings ||
+        pageProps?.data?.jobs ||
+        []
+
+      for (const j of jobsList) {
+        const title = (j.title || j.jobTitle || j.position || '').trim()
+        const school = (j.school || j.schoolName || j.employer || j.organization || '').trim()
+        const location = (j.location || j.city || j.country || '').trim()
+        const url = j.url || j.link || j.applyUrl || j.slug || ''
+        const desc = (j.description || j.summary || j.excerpt || '').trim()
+
+        if (!title || !school) continue
+
+        const { city, country, countryCode } = resolveCountryCode(location)
+        const sourceUrl = url.startsWith('http') ? url : `${baseUrl}${url}`
+
+        jobs.push({
+          position: title,
+          schoolName: school,
+          city,
+          country,
+          countryCode,
+          region: getRegionForCountryCode(countryCode),
+          description: desc.slice(0, 800),
+          sourceUrl,
+          sourceKey: `tie-${computeContentHash(title, school, sourceUrl).slice(0, 12)}`,
+          contractType: 'Full-time',
+          positionCategory: categorizePosition(title),
+        })
+      }
+
+      if (jobs.length > 0) return jobs
+    } catch { /* fall through to HTML parsing */ }
+  }
+
+  // HTML fallback — TIE Online renders job cards with consistent class names
+  // Pattern: look for repeated job card blocks and extract text
+  const jobCardRegex = /<article[^>]*class="[^"]*job[^"]*"[^>]*>([\s\S]*?)<\/article>/gi
+  const linkRegex = /href="([^"]+)"/i
+  const titleRegex = /<h[23][^>]*>([\s\S]*?)<\/h[23]>/i
+  const schoolRegex = /<(?:span|p|div)[^>]*class="[^"]*(?:school|employer|organization)[^"]*"[^>]*>([\s\S]*?)<\/(?:span|p|div)>/i
+  const locationRegex = /<(?:span|p|div)[^>]*class="[^"]*location[^"]*"[^>]*>([\s\S]*?)<\/(?:span|p|div)>/i
+  const descRegex = /<(?:p|div)[^>]*class="[^"]*(?:description|summary|excerpt)[^"]*"[^>]*>([\s\S]*?)<\/(?:p|div)>/i
+
+  let match
+  while ((match = jobCardRegex.exec(html)) !== null) {
+    const card = match[1]
+    const titleMatch = titleRegex.exec(card)
+    const schoolMatch = schoolRegex.exec(card)
+    const locationMatch = locationRegex.exec(card)
+    const linkMatch = linkRegex.exec(card)
+    const descMatch = descRegex.exec(card)
+
+    const title = titleMatch ? titleMatch[1].replace(/<[^>]+>/g, '').trim() : ''
+    const school = schoolMatch ? schoolMatch[1].replace(/<[^>]+>/g, '').trim() : ''
+    const location = locationMatch ? locationMatch[1].replace(/<[^>]+>/g, '').trim() : ''
+    const href = linkMatch ? linkMatch[1] : ''
+    const desc = descMatch ? descMatch[1].replace(/<[^>]+>/g, '').trim() : ''
+
+    if (!title || !school) continue
+
+    const { city, country, countryCode } = resolveCountryCode(location)
+    const sourceUrl = href.startsWith('http') ? href : `${baseUrl}${href}`
+
+    jobs.push({
+      position: title,
+      schoolName: school,
+      city,
+      country,
+      countryCode,
+      region: getRegionForCountryCode(countryCode),
+      description: desc.slice(0, 800),
+      sourceUrl,
+      sourceKey: `tie-${computeContentHash(title, school, sourceUrl).slice(0, 12)}`,
+      contractType: 'Full-time',
+      positionCategory: categorizePosition(title),
+    })
+  }
+
+  return jobs
+}

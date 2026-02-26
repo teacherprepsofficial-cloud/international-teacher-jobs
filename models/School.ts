@@ -32,6 +32,11 @@ export interface ISchool extends Document {
   claimedAt?: Date
   isVerified: boolean
 
+  // ATS (Applicant Tracking System) — auto-discovered via discovery script
+  atsPlatform?: 'greenhouse' | 'lever' | 'workable'
+  atsSlug?: string        // Company slug on the ATS platform
+  atsDiscoveredAt?: Date  // When the ATS was last confirmed working
+
   // Computed
   profileCompleteness: number
 
@@ -66,6 +71,11 @@ const SchoolSchema = new Schema<ISchool>(
     contactEmail: String,
     careerPageUrl: String,
 
+    // ATS
+    atsPlatform: { type: String, enum: ['greenhouse', 'lever', 'workable'] },
+    atsSlug: String,
+    atsDiscoveredAt: Date,
+
     // Claim
     claimed: { type: Boolean, default: false },
     claimedBy: { type: Schema.Types.ObjectId, ref: 'SchoolAdmin' },
@@ -85,6 +95,7 @@ SchoolSchema.index({ region: 1 })
 SchoolSchema.index({ name: 'text' })
 SchoolSchema.index({ claimed: 1, isVerified: 1 })
 SchoolSchema.index({ profileCompleteness: -1 })
+SchoolSchema.index({ atsPlatform: 1, atsSlug: 1 })
 
 export const School =
   mongoose.models.School || mongoose.model<ISchool>('School', SchoolSchema)

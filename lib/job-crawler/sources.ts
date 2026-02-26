@@ -9,4 +9,12 @@ export const JOB_SOURCES: JobSource[] = [
     parserType: 'tes',
     maxPages: 10,
   },
+  {
+    id: 'tie-online',
+    name: 'TIE Online – The International Educator',
+    baseUrl: 'https://www.tieonline.com',
+    searchUrl: 'https://www.tieonline.com/international-teaching-jobs',
+    parserType: 'tie-online',
+    maxPages: 15,
+  },
 ]
