@@ -731,6 +731,623 @@ const RAW_SCHOOLS: { name: string; city: string; country: string }[] = [
   // Additional Africa
   { name: 'International School of Ouagadougou', city: 'Ouagadougou', country: 'Ivory Coast' },
   { name: 'Aga Khan Academy Mombasa', city: 'Mombasa', country: 'Kenya' },
+
+  // =========================================================================
+  // BATCH 2 — Additional International Schools
+  // =========================================================================
+
+  // --- UAE ---
+  { name: 'Abu Dhabi Grammar School', city: 'Abu Dhabi', country: 'United Arab Emirates' },
+  { name: 'Abu Dhabi International School', city: 'Abu Dhabi', country: 'United Arab Emirates' },
+  { name: 'Advanced Generations Schools', city: 'Dubai', country: 'United Arab Emirates' },
+  { name: 'Al Ain English Speaking School', city: 'Al Ain', country: 'United Arab Emirates' },
+  { name: 'Australian International School Sharjah', city: 'Sharjah', country: 'United Arab Emirates' },
+  { name: 'British International School Abu Dhabi', city: 'Abu Dhabi', country: 'United Arab Emirates' },
+  { name: 'Clarion School Dubai', city: 'Dubai', country: 'United Arab Emirates' },
+  { name: 'Deira International School', city: 'Dubai', country: 'United Arab Emirates' },
+  { name: 'Dubai American Academy', city: 'Dubai', country: 'United Arab Emirates' },
+  { name: 'Emirates International School Jumeirah', city: 'Dubai', country: 'United Arab Emirates' },
+  { name: 'Emirates International School Meadows', city: 'Dubai', country: 'United Arab Emirates' },
+  { name: 'GEMS American Academy Abu Dhabi', city: 'Abu Dhabi', country: 'United Arab Emirates' },
+  { name: 'GEMS International School Dubai', city: 'Dubai', country: 'United Arab Emirates' },
+  { name: 'GEMS World Academy Dubai', city: 'Dubai', country: 'United Arab Emirates' },
+  { name: 'GEMS World Academy Abu Dhabi', city: 'Abu Dhabi', country: 'United Arab Emirates' },
+  { name: 'Horizon Private School Dubai', city: 'Dubai', country: 'United Arab Emirates' },
+  { name: 'Institute of Applied Technology Abu Dhabi', city: 'Abu Dhabi', country: 'United Arab Emirates' },
+  { name: 'Khalifa School', city: 'Abu Dhabi', country: 'United Arab Emirates' },
+  { name: 'Lycée Français International Georges Pompidou', city: 'Dubai', country: 'United Arab Emirates' },
+  { name: 'Mirdif Private School', city: 'Dubai', country: 'United Arab Emirates' },
+  { name: 'RAK Academy', city: 'Ras Al Khaimah', country: 'United Arab Emirates' },
+  { name: 'RAK American Academy for Girls', city: 'Ras Al Khaimah', country: 'United Arab Emirates' },
+  { name: 'Raffles International School Dubai', city: 'Dubai', country: 'United Arab Emirates' },
+  { name: 'Regent International School Dubai', city: 'Dubai', country: 'United Arab Emirates' },
+  { name: 'Repton School Dubai', city: 'Dubai', country: 'United Arab Emirates' },
+  { name: 'Rowad Al Khaleej International Schools', city: 'Abu Dhabi', country: 'United Arab Emirates' },
+  { name: 'Swiss International Scientific School Dubai', city: 'Dubai', country: 'United Arab Emirates' },
+  { name: 'The British School Al Khubairat', city: 'Abu Dhabi', country: 'United Arab Emirates' },
+  { name: 'The International School of Choueifat Abu Dhabi', city: 'Abu Dhabi', country: 'United Arab Emirates' },
+  { name: 'The Sheikh Zayed Private Academy for Girls', city: 'Abu Dhabi', country: 'United Arab Emirates' },
+  { name: 'Universal American School Dubai', city: 'Dubai', country: 'United Arab Emirates' },
+  { name: 'Uptown School', city: 'Dubai', country: 'United Arab Emirates' },
+  { name: 'Victoria International School Sharjah', city: 'Sharjah', country: 'United Arab Emirates' },
+
+  // --- Saudi Arabia ---
+  { name: 'Advanced Learning Schools', city: 'Riyadh', country: 'Saudi Arabia' },
+  { name: 'American International School Riyadh', city: 'Riyadh', country: 'Saudi Arabia' },
+  { name: 'American International School of Jeddah', city: 'Jeddah', country: 'Saudi Arabia' },
+  { name: 'British International School Al Khobar', city: 'Al Khobar', country: 'Saudi Arabia' },
+  { name: 'International Programs School Al Khobar', city: 'Al Khobar', country: 'Saudi Arabia' },
+  { name: 'International Schools Group', city: 'Dhahran', country: 'Saudi Arabia' },
+  { name: 'Jeddah Knowledge International School', city: 'Jeddah', country: 'Saudi Arabia' },
+  { name: 'Jeddah Private School', city: 'Jeddah', country: 'Saudi Arabia' },
+  { name: 'Kingdom Schools', city: 'Riyadh', country: 'Saudi Arabia' },
+  { name: 'Knowledge Gate International School', city: 'Riyadh', country: 'Saudi Arabia' },
+  { name: 'Riyadh Najed Schools', city: 'Riyadh', country: 'Saudi Arabia' },
+  { name: 'Saudi Aramco Expatriate Schools', city: 'Dhahran', country: 'Saudi Arabia' },
+  { name: 'The KAUST School', city: 'Thuwal', country: 'Saudi Arabia' },
+
+  // --- Qatar ---
+  { name: 'Awsaj Academy', city: 'Doha', country: 'Qatar' },
+  { name: 'Dukhan English School', city: 'Dukhan', country: 'Qatar' },
+  { name: 'Hayat Universal School Qatar', city: 'Doha', country: 'Qatar' },
+  { name: 'International School London Qatar', city: 'Doha', country: 'Qatar' },
+  { name: 'Mesaieed International School', city: 'Mesaieed', country: 'Qatar' },
+  { name: 'Michael E. DeBakey High School Qatar', city: 'Doha', country: 'Qatar' },
+  { name: 'Qatar Academy Al Khor', city: 'Al Khor', country: 'Qatar' },
+  { name: 'Qatar Academy Al-Wakra', city: 'Al-Wakra', country: 'Qatar' },
+  { name: 'Qatar Academy Msheireb', city: 'Doha', country: 'Qatar' },
+  { name: 'Qatar Academy Sidra', city: 'Doha', country: 'Qatar' },
+  { name: 'Qatar Leadership Academy', city: 'Doha', country: 'Qatar' },
+  { name: 'Sherborne Qatar', city: 'Doha', country: 'Qatar' },
+  { name: 'The English Modern School Doha', city: 'Doha', country: 'Qatar' },
+
+  // --- Kuwait ---
+  { name: 'Al-Bayan Bilingual School', city: 'Kuwait City', country: 'Kuwait' },
+  { name: 'Al-Ibdaa International School', city: 'Kuwait City', country: 'Kuwait' },
+  { name: 'American Creativity Academy', city: 'Kuwait City', country: 'Kuwait' },
+  { name: 'American International School of Kuwait', city: 'Kuwait City', country: 'Kuwait' },
+  { name: 'American United School of Kuwait', city: 'Kuwait City', country: 'Kuwait' },
+  { name: 'Dasman Bilingual School', city: 'Kuwait City', country: 'Kuwait' },
+  { name: 'International Academy Kuwait', city: 'Kuwait City', country: 'Kuwait' },
+  { name: 'Kuwait American School', city: 'Kuwait City', country: 'Kuwait' },
+  { name: 'Kuwait Bilingual School', city: 'Kuwait City', country: 'Kuwait' },
+  { name: 'The American School of Kuwait', city: 'Kuwait City', country: 'Kuwait' },
+
+  // --- Bahrain ---
+  { name: 'Abdulrahman Kanoo International School', city: 'Manama', country: 'Bahrain' },
+  { name: 'Al Hekma International School', city: 'Manama', country: 'Bahrain' },
+  { name: 'American School of Bahrain', city: 'Manama', country: 'Bahrain' },
+  { name: 'Bahrain Bayan School', city: 'Manama', country: 'Bahrain' },
+  { name: 'Gulf English School', city: 'Manama', country: 'Bahrain' },
+  { name: 'Ibn Khuldoon National School', city: 'Manama', country: 'Bahrain' },
+  { name: 'Ocean of Light International Schools', city: 'Manama', country: 'Bahrain' },
+  { name: 'Riffa Views International School', city: 'Riffa', country: 'Bahrain' },
+
+  // --- Oman ---
+  { name: 'Al Batinah International School', city: 'Sohar', country: 'Oman' },
+  { name: 'Al Sahwa Schools', city: 'Muscat', country: 'Oman' },
+  { name: 'Al-Oruba International Schools', city: 'Muscat', country: 'Oman' },
+  { name: 'Azzan Bin Qais International School', city: 'Muscat', country: 'Oman' },
+  { name: 'Muscat International School', city: 'Muscat', country: 'Oman' },
+  { name: 'OurPlanet International School Muscat', city: 'Muscat', country: 'Oman' },
+  { name: 'The International School of Choueifat Muscat', city: 'Muscat', country: 'Oman' },
+  { name: "The Sultan's School", city: 'Muscat', country: 'Oman' },
+
+  // --- Jordan ---
+  { name: 'American Community School Amman', city: 'Amman', country: 'Jordan' },
+  { name: "King's Academy", city: 'Madaba', country: 'Jordan' },
+  { name: 'New English School Jordan', city: 'Amman', country: 'Jordan' },
+  { name: 'The International Academy Amman', city: 'Amman', country: 'Jordan' },
+
+  // --- Lebanon ---
+  { name: 'International College Beirut', city: 'Beirut', country: 'Lebanon' },
+  { name: 'Wellspring Learning Community Beirut', city: 'Beirut', country: 'Lebanon' },
+
+  // --- Israel ---
+  { name: 'Anglican International School Jerusalem', city: 'Jerusalem', country: 'Israel' },
+  { name: 'Jerusalem American International School', city: 'Jerusalem', country: 'Israel' },
+
+  // --- China ---
+  { name: 'Affiliated High School of South China Normal University', city: 'Guangzhou', country: 'China' },
+  { name: 'Avenues The World School Shenzhen', city: 'Shenzhen', country: 'China' },
+  { name: 'BASIS Bilingual School Shenzhen', city: 'Shenzhen', country: 'China' },
+  { name: 'BASIS International School Guangzhou', city: 'Guangzhou', country: 'China' },
+  { name: 'Beanstalk International Bilingual School Beijing', city: 'Beijing', country: 'China' },
+  { name: 'Beijing BISS International School', city: 'Beijing', country: 'China' },
+  { name: 'Beijing City International School', city: 'Beijing', country: 'China' },
+  { name: 'Beijing Huijia IB Private School', city: 'Beijing', country: 'China' },
+  { name: 'Beijing International Bilingual Academy', city: 'Beijing', country: 'China' },
+  { name: 'Beijing National Day School', city: 'Beijing', country: 'China' },
+  { name: 'Canadian International School Beijing', city: 'Beijing', country: 'China' },
+  { name: 'Canadian International School of Hefei', city: 'Hefei', country: 'China' },
+  { name: 'Changchun American International School', city: 'Changchun', country: 'China' },
+  { name: 'China World Academy', city: 'Beijing', country: 'China' },
+  { name: 'Dalian American International School', city: 'Dalian', country: 'China' },
+  { name: 'Dulwich College Shanghai Pudong', city: 'Shanghai', country: 'China' },
+  { name: 'Dulwich College Shanghai Puxi', city: 'Shanghai', country: 'China' },
+  { name: 'Dulwich College Suzhou', city: 'Suzhou', country: 'China' },
+  { name: 'Dulwich International High School Zhuhai', city: 'Zhuhai', country: 'China' },
+  { name: 'Guangdong Country Garden School', city: 'Guangzhou', country: 'China' },
+  { name: 'Guangzhou International Primary School Baiyun', city: 'Guangzhou', country: 'China' },
+  { name: 'Harrow International School Haikou', city: 'Haikou', country: 'China' },
+  { name: 'Harrow International School Beijing', city: 'Beijing', country: 'China' },
+  { name: 'HD Shanghai School', city: 'Shanghai', country: 'China' },
+  { name: 'Hope International School Beijing', city: 'Beijing', country: 'China' },
+  { name: 'Huamao Multicultural Education Academy', city: 'Guangzhou', country: 'China' },
+  { name: 'Mission Hills International School', city: 'Shenzhen', country: 'China' },
+  { name: 'Nanchang International School', city: 'Nanchang', country: 'China' },
+  { name: 'Ningbo Huamao International School', city: 'Ningbo', country: 'China' },
+  { name: 'Nord Anglia International School Shanghai Pudong', city: 'Shanghai', country: 'China' },
+  { name: 'Nord Anglia School Beijing Fangshan', city: 'Beijing', country: 'China' },
+  { name: 'Shanghai Qibao Dwight High School', city: 'Shanghai', country: 'China' },
+  { name: 'Shanghai Shangde Experimental School', city: 'Shanghai', country: 'China' },
+  { name: 'Shanghai Singapore International School', city: 'Shanghai', country: 'China' },
+  { name: 'Shanghai United International School', city: 'Shanghai', country: 'China' },
+  { name: 'Shekou International School', city: 'Shenzhen', country: 'China' },
+  { name: 'Shen Wai International School', city: 'Shenzhen', country: 'China' },
+  { name: 'Shenzhen Oasis International School', city: 'Shenzhen', country: 'China' },
+  { name: 'Suzhou Singapore International School', city: 'Suzhou', country: 'China' },
+  { name: 'Suzhou Yidun International School', city: 'Suzhou', country: 'China' },
+  { name: 'The Affiliated High School of Peking University Dalton Academy', city: 'Beijing', country: 'China' },
+  { name: 'Tsinghua International School', city: 'Beijing', country: 'China' },
+  { name: 'United World College of Changshu China', city: 'Changshu', country: 'China' },
+  { name: 'Utahloy International School Guangzhou', city: 'Guangzhou', country: 'China' },
+  { name: 'Utahloy International School Zengcheng', city: 'Guangzhou', country: 'China' },
+  { name: 'Wellington College International Tianjin', city: 'Tianjin', country: 'China' },
+  { name: 'Western International School of Shanghai', city: 'Shanghai', country: 'China' },
+  { name: 'Wuxi Taihu International School', city: 'Wuxi', country: 'China' },
+  { name: "Xi'an Hanova International School", city: "Xi'an", country: 'China' },
+  { name: 'Xiamen International School', city: 'Xiamen', country: 'China' },
+  { name: 'Yew Chung International School of Beijing', city: 'Beijing', country: 'China' },
+  { name: 'Yew Chung International School of Chongqing', city: 'Chongqing', country: 'China' },
+  { name: 'Yew Chung International School of Shanghai', city: 'Shanghai', country: 'China' },
+  { name: 'Yew Wah International Education School of Guangzhou', city: 'Guangzhou', country: 'China' },
+  { name: 'YK Pao School Shanghai', city: 'Shanghai', country: 'China' },
+  { name: 'Zhuhai International School', city: 'Zhuhai', country: 'China' },
+
+  // --- Hong Kong ---
+  { name: 'American International School Hong Kong', city: 'Hong Kong', country: 'Hong Kong' },
+  { name: 'American School Hong Kong', city: 'Hong Kong', country: 'Hong Kong' },
+  { name: 'Carmel School Association', city: 'Hong Kong', country: 'Hong Kong' },
+  { name: 'Christian Alliance International School', city: 'Hong Kong', country: 'Hong Kong' },
+  { name: 'Creative Secondary School', city: 'Hong Kong', country: 'Hong Kong' },
+  { name: "Diocesan Boys' School", city: 'Hong Kong', country: 'Hong Kong' },
+  { name: 'Discovery College', city: 'Hong Kong', country: 'Hong Kong' },
+  { name: 'English Schools Foundation', city: 'Hong Kong', country: 'Hong Kong' },
+  { name: 'Hong Kong Academy', city: 'Hong Kong', country: 'Hong Kong' },
+  { name: 'International Christian School Hong Kong', city: 'Hong Kong', country: 'Hong Kong' },
+  { name: 'International College Hong Kong', city: 'Hong Kong', country: 'Hong Kong' },
+  { name: 'Malvern College Hong Kong', city: 'Hong Kong', country: 'Hong Kong' },
+  { name: 'Renaissance College Hong Kong', city: 'Hong Kong', country: 'Hong Kong' },
+  { name: 'Singapore International School Hong Kong', city: 'Hong Kong', country: 'Hong Kong' },
+  { name: 'Stamford American School Hong Kong', city: 'Hong Kong', country: 'Hong Kong' },
+  { name: "St. Stephen's College Hong Kong", city: 'Hong Kong', country: 'Hong Kong' },
+  { name: 'The Independent Schools Foundation Academy', city: 'Hong Kong', country: 'Hong Kong' },
+  { name: 'Victoria Educational Organisation', city: 'Hong Kong', country: 'Hong Kong' },
+  { name: 'Victoria Shanghai Academy', city: 'Hong Kong', country: 'Hong Kong' },
+  { name: 'Yew Chung International School Hong Kong', city: 'Hong Kong', country: 'Hong Kong' },
+
+  // --- Taiwan ---
+  { name: 'I-Shou International School', city: 'Kaohsiung', country: 'Taiwan' },
+  { name: 'Ivy Collegiate Academy', city: 'Taichung', country: 'Taiwan' },
+  { name: 'Pacific American School', city: 'Hsinchu', country: 'Taiwan' },
+
+  // --- South Korea ---
+  { name: 'Asia Pacific International School', city: 'Seoul', country: 'South Korea' },
+  { name: 'Branksome Hall Asia', city: 'Jeju', country: 'South Korea' },
+  { name: 'Busan International Foreign School', city: 'Busan', country: 'South Korea' },
+  { name: 'Chadwick International School Songdo', city: 'Incheon', country: 'South Korea' },
+  { name: 'Dwight International School Seoul', city: 'Seoul', country: 'South Korea' },
+  { name: 'Gyeonggi Suwon International School', city: 'Suwon', country: 'South Korea' },
+  { name: 'Korea International School Jeju', city: 'Jeju', country: 'South Korea' },
+  { name: 'Korea Kent Foreign School', city: 'Seoul', country: 'South Korea' },
+  { name: 'North London Collegiate School Jeju', city: 'Jeju', country: 'South Korea' },
+  { name: 'Seoul Foreign School', city: 'Seoul', country: 'South Korea' },
+  { name: 'Taejon Christian International School', city: 'Daejeon', country: 'South Korea' },
+
+  // --- Japan ---
+  { name: 'Canadian International School Tokyo', city: 'Tokyo', country: 'Japan' },
+  { name: 'Fukuoka International School', city: 'Fukuoka', country: 'Japan' },
+  { name: 'Gunma Kokusai Academy', city: 'Ota', country: 'Japan' },
+  { name: 'Hiroshima International School', city: 'Hiroshima', country: 'Japan' },
+  { name: 'Hokkaido International School', city: 'Sapporo', country: 'Japan' },
+  { name: 'International School of Asia Karuizawa', city: 'Karuizawa', country: 'Japan' },
+  { name: 'International Secondary School Tokyo', city: 'Tokyo', country: 'Japan' },
+  { name: 'K. International School Tokyo', city: 'Tokyo', country: 'Japan' },
+  { name: 'Katoh Gakuen', city: 'Numazu', country: 'Japan' },
+  { name: 'Marist Brothers International School', city: 'Kobe', country: 'Japan' },
+  { name: 'Osaka International School of Kwansei Gakuin', city: 'Osaka', country: 'Japan' },
+  { name: 'Osaka YMCA International School', city: 'Osaka', country: 'Japan' },
+  { name: 'Saint Maur International School', city: 'Yokohama', country: 'Japan' },
+  { name: 'Seisen International School', city: 'Tokyo', country: 'Japan' },
+  { name: "St. Mary's International School Tokyo", city: 'Tokyo', country: 'Japan' },
+  { name: 'Tamagawa Academy', city: 'Tokyo', country: 'Japan' },
+  { name: 'Teikyo University Kani High School', city: 'Kani', country: 'Japan' },
+  { name: 'Tokyo International Progressive School', city: 'Tokyo', country: 'Japan' },
+  { name: 'Tokyo International School', city: 'Tokyo', country: 'Japan' },
+  { name: 'UWC ISAK Japan', city: 'Karuizawa', country: 'Japan' },
+  { name: 'Yoyogi International School', city: 'Tokyo', country: 'Japan' },
+
+  // --- Indonesia ---
+  { name: 'ACG School Jakarta', city: 'Jakarta', country: 'Indonesia' },
+  { name: 'Bali International School', city: 'Denpasar', country: 'Indonesia' },
+  { name: 'Bandung Independent School', city: 'Bandung', country: 'Indonesia' },
+  { name: 'Beacon Academy Jakarta', city: 'Jakarta', country: 'Indonesia' },
+  { name: 'Binus International School Simprug', city: 'Jakarta', country: 'Indonesia' },
+  { name: 'British School Jakarta', city: 'Jakarta', country: 'Indonesia' },
+  { name: 'Canggu Community School', city: 'Canggu', country: 'Indonesia' },
+  { name: 'Global Jaya School', city: 'Tangerang', country: 'Indonesia' },
+  { name: 'Intercultural School of Bogor', city: 'Bogor', country: 'Indonesia' },
+  { name: 'Medan Independent School', city: 'Medan', country: 'Indonesia' },
+  { name: 'Mount Zaagkam School', city: 'Timika', country: 'Indonesia' },
+  { name: 'Sekolah Ciputra', city: 'Surabaya', country: 'Indonesia' },
+  { name: 'Singapore International School Jakarta', city: 'Jakarta', country: 'Indonesia' },
+  { name: 'Surabaya European School', city: 'Surabaya', country: 'Indonesia' },
+  { name: 'Surabaya Intercultural School', city: 'Surabaya', country: 'Indonesia' },
+
+  // --- Thailand ---
+  { name: 'Berkeley International School Bangkok', city: 'Bangkok', country: 'Thailand' },
+  { name: 'British International School Phuket', city: 'Phuket', country: 'Thailand' },
+  { name: 'Concordian International School', city: 'Bangkok', country: 'Thailand' },
+  { name: 'Noblesse International School', city: 'Bangkok', country: 'Thailand' },
+  { name: 'Singapore International School of Bangkok', city: 'Bangkok', country: 'Thailand' },
+  { name: 'The Early Learning Centre International Bangkok', city: 'Bangkok', country: 'Thailand' },
+
+  // --- Malaysia ---
+  { name: 'IGB International School', city: 'Kuala Lumpur', country: 'Malaysia' },
+  { name: "Kolej Tuanku Ja'afar", city: 'Negeri Sembilan', country: 'Malaysia' },
+  { name: "Mont'Kiara International School", city: 'Kuala Lumpur', country: 'Malaysia' },
+  { name: 'The International School of Penang Uplands', city: 'Penang', country: 'Malaysia' },
+
+  // --- Singapore ---
+  { name: '3E International School', city: 'Singapore', country: 'Singapore' },
+  { name: 'ACS International Singapore', city: 'Singapore', country: 'Singapore' },
+  { name: 'Chatsworth International School Singapore', city: 'Singapore', country: 'Singapore' },
+  { name: 'EtonHouse International School', city: 'Singapore', country: 'Singapore' },
+  { name: 'GEMS World Academy Singapore', city: 'Singapore', country: 'Singapore' },
+  { name: 'ISS International School', city: 'Singapore', country: 'Singapore' },
+  { name: "St. Joseph's Institution International High School", city: 'Singapore', country: 'Singapore' },
+  { name: 'United World College South East Asia', city: 'Singapore', country: 'Singapore' },
+
+  // --- India ---
+  { name: 'BD Somani International School', city: 'Mumbai', country: 'India' },
+  { name: 'Canadian International School Bangalore', city: 'Bangalore', country: 'India' },
+  { name: 'Dhirubhai Ambani International School', city: 'Mumbai', country: 'India' },
+  { name: 'DSB International School', city: 'Mumbai', country: 'India' },
+  { name: 'Ecole Mondiale World School', city: 'Mumbai', country: 'India' },
+  { name: 'Foremarke School India', city: 'Gurugram', country: 'India' },
+  { name: 'Genesis Global School', city: 'Noida', country: 'India' },
+  { name: 'Heritage Xperiential Learning School', city: 'Gurugram', country: 'India' },
+  { name: 'International School of Hyderabad', city: 'Hyderabad', country: 'India' },
+  { name: 'International Village School Chennai', city: 'Chennai', country: 'India' },
+  { name: 'JBCN International School Parel', city: 'Mumbai', country: 'India' },
+  { name: 'Mahindra International School', city: 'Pune', country: 'India' },
+  { name: 'Pathways World School', city: 'Gurugram', country: 'India' },
+  { name: 'Singapore International School Mumbai', city: 'Mumbai', country: 'India' },
+  { name: 'The Aga Khan Academy Hyderabad', city: 'Hyderabad', country: 'India' },
+  { name: 'The British School New Delhi', city: 'New Delhi', country: 'India' },
+  { name: 'The Heritage School Kolkata', city: 'Kolkata', country: 'India' },
+
+  // --- Pakistan ---
+  { name: 'British Overseas School Karachi', city: 'Karachi', country: 'Pakistan' },
+
+  // --- Sri Lanka ---
+  { name: 'The Overseas School of Colombo', city: 'Colombo', country: 'Sri Lanka' },
+
+  // --- Laos ---
+  { name: 'Australian International School of Laos', city: 'Vientiane', country: 'Laos' },
+  { name: 'Kiettisack International School', city: 'Vientiane', country: 'Laos' },
+  { name: 'Panyathip International School', city: 'Vientiane', country: 'Laos' },
+
+  // --- Cambodia ---
+  { name: 'Australian International School of Phnom Penh', city: 'Phnom Penh', country: 'Cambodia' },
+  { name: 'The Liger Learning Center', city: 'Phnom Penh', country: 'Cambodia' },
+  { name: 'Treehouse International School', city: 'Phnom Penh', country: 'Cambodia' },
+
+  // --- Myanmar ---
+  { name: 'Ayeyarwaddy International School', city: 'Yangon', country: 'Myanmar' },
+  { name: 'International School of Myanmar', city: 'Yangon', country: 'Myanmar' },
+  { name: 'Myanmar International School Yangon', city: 'Yangon', country: 'Myanmar' },
+  { name: 'The International School Yangon', city: 'Yangon', country: 'Myanmar' },
+
+  // --- Philippines ---
+  { name: 'Alcanta International College', city: 'Manila', country: 'Philippines' },
+  { name: 'German European School Manila', city: 'Manila', country: 'Philippines' },
+  { name: 'Global Bilingual Academy School', city: 'Manila', country: 'Philippines' },
+
+  // --- Brunei ---
+  { name: 'CfBT Education Services Brunei', city: 'Bandar Seri Begawan', country: 'Brunei' },
+
+  // --- Egypt ---
+  { name: 'Cairo English School', city: 'Cairo', country: 'Egypt' },
+  { name: 'Dover American International School Cairo', city: 'Cairo', country: 'Egypt' },
+  { name: 'Ecole Oasis Internationale Cairo', city: 'Cairo', country: 'Egypt' },
+  { name: 'El Alsson British and American International School', city: 'Cairo', country: 'Egypt' },
+  { name: 'Hayah International Academy Cairo', city: 'Cairo', country: 'Egypt' },
+  { name: 'Malvern College Egypt', city: 'Cairo', country: 'Egypt' },
+  { name: 'Misr American College', city: 'Cairo', country: 'Egypt' },
+  { name: 'Modern English School Cairo', city: 'Cairo', country: 'Egypt' },
+  { name: 'Narmer American College', city: 'Cairo', country: 'Egypt' },
+  { name: 'New Cairo British International School', city: 'Cairo', country: 'Egypt' },
+  { name: 'Smart Village Schools Cairo', city: 'Cairo', country: 'Egypt' },
+  { name: 'The British School Al Rehab', city: 'Cairo', country: 'Egypt' },
+  { name: 'The Egyptian Language School', city: 'Cairo', country: 'Egypt' },
+
+  // --- Morocco ---
+  { name: 'American School of Marrakesh', city: 'Marrakesh', country: 'Morocco' },
+  { name: 'George Washington Academy Casablanca', city: 'Casablanca', country: 'Morocco' },
+
+  // --- Kenya ---
+  { name: 'Aga Khan Academy Nairobi', city: 'Nairobi', country: 'Kenya' },
+
+  // --- Ethiopia ---
+  { name: 'Sandford International School Addis Ababa', city: 'Addis Ababa', country: 'Ethiopia' },
+
+  // --- Nigeria ---
+  { name: 'Surefoot International School Calabar', city: 'Calabar', country: 'Nigeria' },
+  { name: 'The International School of IITA Ibadan', city: 'Ibadan', country: 'Nigeria' },
+
+  // --- Angola ---
+  { name: 'Luanda International School of Angola', city: 'Luanda', country: 'Angola' },
+
+  // --- South Africa ---
+  { name: 'Good Hope Country Day School', city: 'Cape Town', country: 'South Africa' },
+  { name: 'Hout Bay International School', city: 'Cape Town', country: 'South Africa' },
+  { name: 'The International School of Cape Town', city: 'Cape Town', country: 'South Africa' },
+
+  // --- Rwanda ---
+  { name: 'International School of Kigali', city: 'Kigali', country: 'Rwanda' },
+
+  // --- Tanzania ---
+  { name: 'Woodford International School', city: 'Dar es Salaam', country: 'Tanzania' },
+
+  // --- Malawi ---
+  { name: 'Bishop Mackenzie International School Lilongwe', city: 'Lilongwe', country: 'Malawi' },
+
+  // --- Mozambique ---
+  { name: 'Aga Khan Academy Maputo', city: 'Maputo', country: 'Mozambique' },
+
+  // --- Lesotho ---
+  { name: 'American International School of Lesotho', city: 'Maseru', country: 'Lesotho' },
+  { name: 'Machabeng College International School of Lesotho', city: 'Maseru', country: 'Lesotho' },
+
+  // --- Eritrea ---
+  { name: 'Asmara International Community School', city: 'Asmara', country: 'Eritrea' },
+
+  // --- Sudan ---
+  { name: 'Khartoum American School', city: 'Khartoum', country: 'Sudan' },
+  { name: 'Khartoum International Community School', city: 'Khartoum', country: 'Sudan' },
+  { name: 'Unity High School Khartoum', city: 'Khartoum', country: 'Sudan' },
+
+  // --- West Africa ---
+  { name: 'American International School of Lome', city: 'Lomé', country: 'Togo' },
+  { name: 'American International School of Niamey', city: 'Niamey', country: 'Niger' },
+  { name: 'American International School of Bamako', city: 'Bamako', country: 'Mali' },
+  { name: 'American International School Nouakchott', city: 'Nouakchott', country: 'Mauritania' },
+  { name: 'International Community School of Abidjan', city: 'Abidjan', country: 'Côte d\'Ivoire' },
+
+  // --- Iraq ---
+  { name: 'Ihsan Dogramaci Bilkent Erbil College', city: 'Erbil', country: 'Iraq' },
+  { name: 'International Maarif Schools Erbil', city: 'Erbil', country: 'Iraq' },
+
+  // --- Turkey ---
+  { name: 'Adana Gundogdu College', city: 'Adana', country: 'Turkey' },
+  { name: 'Bilkent Erzurum Laboratory School', city: 'Erzurum', country: 'Turkey' },
+  { name: 'Bilkent Laboratory and International School Ankara', city: 'Ankara', country: 'Turkey' },
+  { name: 'Darussafaka Schools', city: 'Istanbul', country: 'Turkey' },
+  { name: 'Enka Schools Istanbul', city: 'Istanbul', country: 'Turkey' },
+  { name: 'Hisar School Istanbul', city: 'Istanbul', country: 'Turkey' },
+  { name: 'Isikkent School', city: 'Izmir', country: 'Turkey' },
+  { name: 'Istek Belde School', city: 'Istanbul', country: 'Turkey' },
+  { name: 'MEF International School Izmir', city: 'Izmir', country: 'Turkey' },
+  { name: 'Robert College of Istanbul', city: 'Istanbul', country: 'Turkey' },
+  { name: 'SEV American College', city: 'Izmir', country: 'Turkey' },
+  { name: 'Tarsus American College', city: 'Tarsus', country: 'Turkey' },
+  { name: 'The Koc School', city: 'Istanbul', country: 'Turkey' },
+  { name: 'Uskudar American Academy', city: 'Istanbul', country: 'Turkey' },
+
+  // --- Kazakhstan ---
+  { name: 'Haileybury Astana', city: 'Nur-Sultan', country: 'Kazakhstan' },
+  { name: 'International School of Almaty', city: 'Almaty', country: 'Kazakhstan' },
+  { name: 'Kazakhstan International School', city: 'Almaty', country: 'Kazakhstan' },
+  { name: 'Miras International School Almaty', city: 'Almaty', country: 'Kazakhstan' },
+  { name: 'Miras International School Nur-Sultan', city: 'Nur-Sultan', country: 'Kazakhstan' },
+  { name: 'Nazarbayev Intellectual School Nur-Sultan', city: 'Nur-Sultan', country: 'Kazakhstan' },
+
+  // --- Azerbaijan ---
+  { name: 'Baku Modern International School', city: 'Baku', country: 'Azerbaijan' },
+  { name: 'Baku-Oxford School', city: 'Baku', country: 'Azerbaijan' },
+  { name: 'European School of Azerbaijan', city: 'Baku', country: 'Azerbaijan' },
+  { name: 'The International School of Azerbaijan', city: 'Baku', country: 'Azerbaijan' },
+
+  // --- Georgia ---
+  { name: 'BGA International School Tbilisi', city: 'Tbilisi', country: 'Georgia' },
+  { name: 'New School International School of Georgia', city: 'Tbilisi', country: 'Georgia' },
+
+  // --- Ukraine ---
+  { name: 'British International School Kyiv', city: 'Kyiv', country: 'Ukraine' },
+  { name: 'Pechersk School International Kyiv', city: 'Kyiv', country: 'Ukraine' },
+
+  // --- Russia ---
+  { name: 'The Anglo-American School of Moscow', city: 'Moscow', country: 'Russia' },
+
+  // --- Serbia ---
+  { name: 'International School of Belgrade', city: 'Belgrade', country: 'Serbia' },
+
+  // --- Baltic States ---
+  { name: 'American International School of Vilnius', city: 'Vilnius', country: 'Lithuania' },
+  { name: 'International School of Estonia', city: 'Tallinn', country: 'Estonia' },
+  { name: 'International School of Latvia', city: 'Riga', country: 'Latvia' },
+  { name: 'Vilnius International School', city: 'Vilnius', country: 'Lithuania' },
+
+  // --- Bulgaria & Croatia ---
+  { name: 'Anglo-American School of Sofia', city: 'Sofia', country: 'Bulgaria' },
+  { name: 'American International School of Zagreb', city: 'Zagreb', country: 'Croatia' },
+  { name: 'The American College of Sofia', city: 'Sofia', country: 'Bulgaria' },
+
+  // --- Czech Republic ---
+  { name: 'Park Lane International School Prague', city: 'Prague', country: 'Czech Republic' },
+
+  // --- Germany ---
+  { name: 'Bavarian International School', city: 'Munich', country: 'Germany' },
+  { name: 'Berlin Brandenburg International School', city: 'Berlin', country: 'Germany' },
+  { name: 'Berlin British School', city: 'Berlin', country: 'Germany' },
+  { name: 'Dresden International School', city: 'Dresden', country: 'Germany' },
+  { name: 'Franconian International School Erlangen', city: 'Erlangen', country: 'Germany' },
+  { name: 'International School Hannover Region', city: 'Hannover', country: 'Germany' },
+  { name: 'International School of Ulm', city: 'Ulm', country: 'Germany' },
+  { name: 'International School Ruhr', city: 'Duisburg', country: 'Germany' },
+  { name: 'ISF Internationale Schule Frankfurt-Rhein-Main', city: 'Frankfurt', country: 'Germany' },
+  { name: 'John F. Kennedy School Berlin', city: 'Berlin', country: 'Germany' },
+  { name: 'Kammer International Bilingual School Hannover', city: 'Hannover', country: 'Germany' },
+  { name: 'Metropolitan School Frankfurt', city: 'Frankfurt', country: 'Germany' },
+  { name: 'Munich International School', city: 'Munich', country: 'Germany' },
+  { name: 'Schule Schloss Salem', city: 'Salem', country: 'Germany' },
+  { name: 'Strothoff International School Frankfurt', city: 'Frankfurt', country: 'Germany' },
+  { name: 'Thuringia International School Weimar', city: 'Weimar', country: 'Germany' },
+
+  // --- France ---
+  { name: 'Lycée International de Saint-Germain-en-Laye', city: 'Saint-Germain-en-Laye', country: 'France' },
+
+  // --- Spain ---
+  { name: 'American School of Bilbao', city: 'Bilbao', country: 'Spain' },
+  { name: 'International College Spain', city: 'Madrid', country: 'Spain' },
+  { name: 'SEK International Schools', city: 'Madrid', country: 'Spain' },
+  { name: 'Sotogrande International School', city: 'Sotogrande', country: 'Spain' },
+
+  // --- Portugal ---
+  { name: 'Atlantic Education International Lisbon', city: 'Lisbon', country: 'Portugal' },
+  { name: 'Carlucci American International School Lisbon', city: 'Lisbon', country: 'Portugal' },
+  { name: 'Oporto British School', city: 'Porto', country: 'Portugal' },
+  { name: "St. Dominic's International School Lisbon", city: 'Lisbon', country: 'Portugal' },
+
+  // --- Italy ---
+  { name: 'Ambrit International School Rome', city: 'Rome', country: 'Italy' },
+  { name: 'International School in Genoa', city: 'Genoa', country: 'Italy' },
+  { name: 'International School of Bologna', city: 'Bologna', country: 'Italy' },
+  { name: 'International School of Trieste', city: 'Trieste', country: 'Italy' },
+  { name: 'International School of Turin', city: 'Turin', country: 'Italy' },
+  { name: 'Marymount International School Rome', city: 'Rome', country: 'Italy' },
+  { name: 'Rome International School', city: 'Rome', country: 'Italy' },
+  { name: "St. Stephen's School Rome", city: 'Rome', country: 'Italy' },
+  { name: 'The Bilingual School of Monza', city: 'Monza', country: 'Italy' },
+
+  // --- Switzerland ---
+  { name: 'Gems World Academy Etoy', city: 'Etoy', country: 'Switzerland' },
+  { name: 'Inter-Community School Zurich', city: 'Zurich', country: 'Switzerland' },
+  { name: 'International School Basel', city: 'Basel', country: 'Switzerland' },
+  { name: 'International School of Berne', city: 'Berne', country: 'Switzerland' },
+  { name: 'International School of Lausanne', city: 'Lausanne', country: 'Switzerland' },
+  { name: 'International School of Zug and Luzern', city: 'Zug', country: 'Switzerland' },
+  { name: 'Leman International School Geneva', city: 'Geneva', country: 'Switzerland' },
+  { name: 'Lyceum Alpinum Zuoz', city: 'Zuoz', country: 'Switzerland' },
+
+  // --- Austria ---
+  { name: 'American International School Vienna', city: 'Vienna', country: 'Austria' },
+  { name: 'International School Carinthia', city: 'Klagenfurt', country: 'Austria' },
+  { name: 'The American International School Salzburg', city: 'Salzburg', country: 'Austria' },
+
+  // --- Hungary, Belgium, Netherlands ---
+  { name: 'The British International School Budapest', city: 'Budapest', country: 'Hungary' },
+  { name: "St. John's International School Brussels", city: 'Brussels', country: 'Belgium' },
+  { name: 'American International School of Rotterdam', city: 'Rotterdam', country: 'Netherlands' },
+  { name: 'The International School of The Hague', city: 'The Hague', country: 'Netherlands' },
+
+  // --- Ireland, Denmark, Norway ---
+  { name: 'SEK Dublin International School', city: 'Dublin', country: 'Ireland' },
+  { name: 'Aarhus Academy for Global Education', city: 'Aarhus', country: 'Denmark' },
+  { name: 'Aarhus International School', city: 'Aarhus', country: 'Denmark' },
+  { name: 'Esbjerg International School', city: 'Esbjerg', country: 'Denmark' },
+  { name: 'Kongsberg International School', city: 'Kongsberg', country: 'Norway' },
+  { name: 'Skagerak International School', city: 'Sandefjord', country: 'Norway' },
+  { name: 'Trondheim International School', city: 'Trondheim', country: 'Norway' },
+
+  // --- Luxembourg, UK ---
+  { name: 'St. George International School Luxembourg', city: 'Luxembourg City', country: 'Luxembourg' },
+  { name: 'International School of Aberdeen', city: 'Aberdeen', country: 'United Kingdom' },
+
+  // --- Mongolia ---
+  { name: 'Orchlon School Ulaanbaatar', city: 'Ulaanbaatar', country: 'Mongolia' },
+
+  // --- Mexico ---
+  { name: 'American School of Durango', city: 'Durango', country: 'Mexico' },
+  { name: 'Greengates School Mexico City', city: 'Mexico City', country: 'Mexico' },
+  { name: 'Instituto San Roberto Monterrey', city: 'Monterrey', country: 'Mexico' },
+  { name: 'Lancaster School Mexico City', city: 'Mexico City', country: 'Mexico' },
+  { name: 'The American School Foundation Mexico City', city: 'Mexico City', country: 'Mexico' },
+
+  // --- Colombia ---
+  { name: 'Colegio Bolivar', city: 'Cali', country: 'Colombia' },
+  { name: 'Colegio Granadino', city: 'Manizales', country: 'Colombia' },
+  { name: 'Colegio Los Nogales', city: 'Bogotá', country: 'Colombia' },
+  { name: 'Colegio Panamericano', city: 'Bucaramanga', country: 'Colombia' },
+  { name: 'Fundacion Liceo Ingles Pereira', city: 'Pereira', country: 'Colombia' },
+  { name: 'Gimnasio Colombo Britanico Bilingue Internacional', city: 'Medellín', country: 'Colombia' },
+  { name: 'Knightsbridge Schools International Bogota', city: 'Bogotá', country: 'Colombia' },
+  { name: 'Rochester School Bogota', city: 'Bogotá', country: 'Colombia' },
+  { name: 'The Canadian School of Medellin', city: 'Medellín', country: 'Colombia' },
+  { name: 'The Columbus School', city: 'Medellín', country: 'Colombia' },
+  { name: 'The English School Bogota', city: 'Bogotá', country: 'Colombia' },
+
+  // --- Ecuador ---
+  { name: 'Academia Cotopaxi American International School', city: 'Quito', country: 'Ecuador' },
+  { name: 'American School of Quito', city: 'Quito', country: 'Ecuador' },
+  { name: 'Colegio Menor Guayaquil', city: 'Guayaquil', country: 'Ecuador' },
+  { name: 'Unidad Educativa Alberto Einstein', city: 'Quito', country: 'Ecuador' },
+
+  // --- El Salvador & Honduras ---
+  { name: 'Academia Britanica Cuscatleca', city: 'Santa Tecla', country: 'El Salvador' },
+  { name: 'Colegio Internacional de San Salvador', city: 'San Salvador', country: 'El Salvador' },
+  { name: 'The American School of El Salvador', city: 'San Salvador', country: 'El Salvador' },
+  { name: 'Alison Bixby Stone School Honduras', city: 'San Pedro Sula', country: 'Honduras' },
+  { name: 'Escuela Internacional Sampedrana', city: 'San Pedro Sula', country: 'Honduras' },
+
+  // --- Guatemala & Bolivia ---
+  { name: 'Colegio Maya', city: 'Guatemala City', country: 'Guatemala' },
+  { name: 'Santa Cruz Cooperative School', city: 'Santa Cruz', country: 'Bolivia' },
+
+  // --- Peru ---
+  { name: 'Colegio Franklin Roosevelt The American School of Lima', city: 'Lima', country: 'Peru' },
+  { name: 'Newton College Lima', city: 'Lima', country: 'Peru' },
+
+  // --- Brazil ---
+  { name: 'American School of Belo Horizonte', city: 'Belo Horizonte', country: 'Brazil' },
+  { name: 'American School of Recife', city: 'Recife', country: 'Brazil' },
+  { name: 'Avenues The World School Sao Paulo', city: 'São Paulo', country: 'Brazil' },
+  { name: 'Chapel School Sao Paulo', city: 'São Paulo', country: 'Brazil' },
+  { name: 'Escola Americana de Campinas', city: 'Campinas', country: 'Brazil' },
+  { name: 'Escola Beit Yaacov Sao Paulo', city: 'São Paulo', country: 'Brazil' },
+  { name: 'Escola Cidade Jardim Sao Paulo', city: 'São Paulo', country: 'Brazil' },
+  { name: 'Graded The American School Sao Paulo', city: 'São Paulo', country: 'Brazil' },
+  { name: 'Instituto Alberto Einstein Sao Paulo', city: 'São Paulo', country: 'Brazil' },
+  { name: 'Pan American School of Bahia', city: 'Salvador', country: 'Brazil' },
+  { name: 'Panamerican School of Porto Alegre', city: 'Porto Alegre', country: 'Brazil' },
+  { name: 'St. Francis College Sao Paulo', city: 'São Paulo', country: 'Brazil' },
+
+  // --- Costa Rica & Panama ---
+  { name: 'Country Day School San Jose', city: 'San José', country: 'Costa Rica' },
+  { name: 'Marian Baker School San Jose', city: 'San José', country: 'Costa Rica' },
+  { name: 'Pan-American School Costa Rica', city: 'San José', country: 'Costa Rica' },
+  { name: 'The International School of Panama', city: 'Panama City', country: 'Panama' },
+
+  // --- Caribbean ---
+  { name: 'American International School Kingston', city: 'Kingston', country: 'Jamaica' },
+  { name: 'Cap Cana Heritage School', city: 'Punta Cana', country: 'Dominican Republic' },
+  { name: 'International School of Sosua', city: 'Sosúa', country: 'Dominican Republic' },
+  { name: 'The Codrington School International School of Barbados', city: 'Bridgetown', country: 'Barbados' },
+  { name: 'Saltus Grammar School', city: 'Hamilton', country: 'Bermuda' },
+  { name: "St. Michael's School Bermuda", city: 'Hamilton', country: 'Bermuda' },
+  { name: 'Warwick Academy Bermuda', city: 'Hamilton', country: 'Bermuda' },
+
+  // --- Pacific ---
+  { name: 'International School Nadi', city: 'Nadi', country: 'Fiji' },
+  { name: 'International School Suva', city: 'Suva', country: 'Fiji' },
+  { name: 'Port Vila International School', city: 'Port Vila', country: 'Vanuatu' },
+
+  // --- Cuba & Montenegro & Curaçao ---
+  { name: 'International School Havana', city: 'Havana', country: 'Cuba' },
+  { name: 'Knightsbridge Schools International Montenegro', city: 'Podgorica', country: 'Montenegro' },
+  { name: 'International School of Curacao', city: 'Willemstad', country: 'Curaçao' },
 ]
 
 // ---------------------------------------------------------------------------
