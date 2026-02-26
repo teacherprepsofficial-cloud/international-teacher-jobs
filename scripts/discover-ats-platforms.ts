@@ -63,9 +63,10 @@ async function fetchJson(url: string, opts?: RequestInit): Promise<any | null> {
 // If a slug returns more than this, it's almost certainly the wrong company.
 const MAX_SCHOOL_JOBS = 120
 
-// Minimum slug length — slugs shorter than this are too generic and likely
-// to match unrelated companies (e.g., "bis", "nice", "london").
-const MIN_SLUG_LENGTH = 5
+// Company name verification is the primary guard against false positives.
+// We do NOT use a minimum slug length — instead we verify every match.
+// Minimum of 3 chars just to avoid single/double letter garbage.
+const MIN_SLUG_LENGTH = 3
 
 // ── Greenhouse ───────────────────────────────────────────────────────────────
 // Also validates the company name in the HTML page to avoid false positives.
