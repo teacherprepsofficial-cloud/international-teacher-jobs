@@ -60,7 +60,7 @@ export default function Header() {
             {!isSchoolRoute && (
               <>
                 <Link href="/schools" className="text-sm text-accent-blue hover:underline">
-                  Schools
+                  Directory
                 </Link>
                 <Link href="/contact" className="text-sm text-accent-blue hover:underline">
                   Contact
@@ -118,7 +118,7 @@ export default function Header() {
                 onClick={closeMenu}
                 className="flex items-center py-3.5 text-sm font-medium text-text-primary border-b border-card-border active:bg-gray-50 transition-colors"
               >
-                Schools
+                Directory
               </Link>
               <Link
                 href="/contact"
