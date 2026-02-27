@@ -1,6 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import { getCountriesForFilter } from '@/lib/countries'
+import { getRegionsForFilter, getRegionForCountryCode } from '@/lib/regions'
 
 interface Job {
   _id: string
@@ -33,8 +35,14 @@ interface CrawlRun {
 }
 
 export default function AdminPage() {
-  const [adminPassword, setAdminPassword] = useState('')
+  // Auth state
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [authChecking, setAuthChecking] = useState(true)
+  const [adminName, setAdminName] = useState('')
+
+  // Existing state
   const [jobs, setJobs] = useState<Job[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -47,17 +55,91 @@ export default function AdminPage() {
   const [schoolStats, setSchoolStats] = useState<any>(null)
   const [claimedSchools, setClaimedSchools] = useState<any[]>([])
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (adminPassword === 'admin123') {
-      setIsAuthenticated(true)
-      fetchPendingJobs()
-      fetchCrawlHistory()
-      fetchSubscriberStats()
-      fetchSchoolClaims()
-    } else {
-      setError('Invalid password')
+  // Post Job form state
+  const [postJobOpen, setPostJobOpen] = useState(false)
+  const [postJobLoading, setPostJobLoading] = useState(false)
+  const [postJobSuccess, setPostJobSuccess] = useState('')
+  const [logo, setLogo] = useState('')
+  const [logoPreview, setLogoPreview] = useState('')
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const countries = getCountriesForFilter()
+  const regions = getRegionsForFilter()
+
+  const [formData, setFormData] = useState({
+    schoolName: '',
+    city: '',
+    country: '',
+    countryCode: '',
+    region: '',
+    position: '',
+    positionCategory: 'elementary',
+    description: '',
+    applicationUrl: '',
+    salary: '',
+    contractType: 'Full-time',
+    startDate: '',
+    careerPageUrl: '',
+  })
+
+  // Check if already authenticated on mount
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        // Try calling a protected admin endpoint to verify cookie
+        const res = await fetch('/api/admin/jobs?status=pending')
+        if (res.ok) {
+          setIsAuthenticated(true)
+          loadAllData()
+        }
+      } catch {
+        // Not authenticated
+      } finally {
+        setAuthChecking(false)
+      }
     }
+    checkAuth()
+  }, [])
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError('')
+    setLoading(true)
+
+    try {
+      const res = await fetch('/api/admin/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      })
+
+      const data = await res.json()
+      if (!res.ok) {
+        setError(data.error || 'Login failed')
+        return
+      }
+
+      setIsAuthenticated(true)
+      setAdminName(data.admin?.name || '')
+      loadAllData()
+    } catch {
+      setError('Login failed')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleLogout = async () => {
+    await fetch('/api/admin/auth/logout', { method: 'POST' })
+    setIsAuthenticated(false)
+    setEmail('')
+    setPassword('')
+  }
+
+  const loadAllData = () => {
+    fetchPendingJobs()
+    fetchCrawlHistory()
+    fetchSubscriberStats()
+    fetchSchoolClaims()
   }
 
   const fetchPendingJobs = async () => {
@@ -196,6 +278,95 @@ export default function AdminPage() {
     }
   }
 
+  // --- Post Job Form Handlers ---
+
+  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target
+    if (name === 'countryCode') {
+      const region = value ? getRegionForCountryCode(value) : ''
+      // Find country name from code
+      const countryObj = countries.find((c) => c.code === value)
+      setFormData((prev) => ({ ...prev, countryCode: value, region, country: countryObj?.name || '' }))
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }))
+    }
+  }
+
+  const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    if (file.size > 500 * 1024) {
+      setError('Logo must be under 500 KB')
+      return
+    }
+    const reader = new FileReader()
+    reader.onload = (ev) => {
+      const dataUrl = ev.target?.result as string
+      setLogo(dataUrl)
+      setLogoPreview(dataUrl)
+      setError('')
+    }
+    reader.readAsDataURL(file)
+  }
+
+  const handlePostJob = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setPostJobLoading(true)
+    setError('')
+    setPostJobSuccess('')
+
+    try {
+      const res = await fetch('/api/admin/post-job', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...formData, logo }),
+      })
+
+      const data = await res.json()
+      if (!res.ok) {
+        setError(data.error || 'Failed to post job')
+        return
+      }
+
+      let msg = 'Job posted and live on homepage!'
+      if (data.schoolMatched) msg += ' School matched in directory.'
+      if (data.careerPageSaved) msg += ' Career page URL saved.'
+      setPostJobSuccess(msg)
+
+      // Reset form
+      setFormData({
+        schoolName: '',
+        city: '',
+        country: '',
+        countryCode: '',
+        region: '',
+        position: '',
+        positionCategory: 'elementary',
+        description: '',
+        applicationUrl: '',
+        salary: '',
+        contractType: 'Full-time',
+        startDate: '',
+        careerPageUrl: '',
+      })
+      setLogo('')
+      setLogoPreview('')
+      fetchPendingJobs()
+    } catch {
+      setError('Failed to post job')
+    } finally {
+      setPostJobLoading(false)
+    }
+  }
+
+  if (authChecking) {
+    return (
+      <div className="container mx-auto px-4 py-12 text-center">
+        <p className="text-text-muted">Loading...</p>
+      </div>
+    )
+  }
+
   if (!isAuthenticated) {
     return (
       <div className="container mx-auto px-4 py-12 max-w-md">
@@ -204,16 +375,28 @@ export default function AdminPage() {
           {error && <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded text-red-800 text-sm">{error}</div>}
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
-              <label className="block text-sm font-semibold mb-2">Admin Password</label>
+              <label className="block text-sm font-semibold mb-2">Email</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="w-full px-4 py-2 border border-card-border rounded"
+                placeholder="admin@example.com"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold mb-2">Password</label>
               <input
                 type="password"
-                value={adminPassword}
-                onChange={(e) => setAdminPassword(e.target.value)}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
                 className="w-full px-4 py-2 border border-card-border rounded"
               />
             </div>
-            <button type="submit" className="w-full btn-primary">
-              Login
+            <button type="submit" disabled={loading} className="w-full btn-primary disabled:opacity-50">
+              {loading ? 'Logging in...' : 'Login'}
             </button>
           </form>
         </div>
@@ -223,7 +406,235 @@ export default function AdminPage() {
 
   return (
     <div className="container mx-auto px-4 py-4 md:py-8">
-      <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 md:mb-8">Admin Panel</h1>
+      <div className="flex items-center justify-between mb-4 md:mb-8">
+        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold">Admin Panel</h1>
+        <button onClick={handleLogout} className="btn-outline text-sm">
+          Logout
+        </button>
+      </div>
+
+      {/* Post Job Form */}
+      <div className="bg-card-bg border border-card-border rounded-[15px] p-3 sm:p-4 md:p-6 mb-6">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-bold">Post a Job</h2>
+          <button
+            onClick={() => setPostJobOpen(!postJobOpen)}
+            className="btn-secondary text-sm"
+          >
+            {postJobOpen ? 'Close' : 'New Job'}
+          </button>
+        </div>
+
+        {postJobSuccess && (
+          <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded text-green-800 text-sm">
+            {postJobSuccess}
+          </div>
+        )}
+
+        {error && postJobOpen && (
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded text-red-800 text-sm">{error}</div>
+        )}
+
+        {postJobOpen && (
+          <form onSubmit={handlePostJob} className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-semibold mb-1">Position Title *</label>
+                <input
+                  type="text"
+                  name="position"
+                  value={formData.position}
+                  onChange={handleFormChange}
+                  required
+                  placeholder="e.g., Middle School Math Teacher"
+                  className="w-full px-3 py-2 border border-card-border rounded text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold mb-1">School Name *</label>
+                <input
+                  type="text"
+                  name="schoolName"
+                  value={formData.schoolName}
+                  onChange={handleFormChange}
+                  required
+                  className="w-full px-3 py-2 border border-card-border rounded text-sm"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-sm font-semibold mb-1">City *</label>
+                <input
+                  type="text"
+                  name="city"
+                  value={formData.city}
+                  onChange={handleFormChange}
+                  required
+                  className="w-full px-3 py-2 border border-card-border rounded text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold mb-1">Country *</label>
+                <select
+                  name="countryCode"
+                  value={formData.countryCode}
+                  onChange={handleFormChange}
+                  required
+                  className="w-full px-3 py-2 border border-card-border rounded text-sm"
+                >
+                  <option value="">Select country</option>
+                  {countries.map((c) => (
+                    <option key={c.code} value={c.code}>
+                      {c.emoji} {c.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-semibold mb-1">Region</label>
+                <input
+                  type="text"
+                  value={formData.region ? regions.find((r) => r.value === formData.region)?.label || formData.region : ''}
+                  disabled
+                  className="w-full px-3 py-2 border border-card-border rounded text-sm bg-gray-50 text-text-muted"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-sm font-semibold mb-1">Category *</label>
+                <select
+                  name="positionCategory"
+                  value={formData.positionCategory}
+                  onChange={handleFormChange}
+                  required
+                  className="w-full px-3 py-2 border border-card-border rounded text-sm"
+                >
+                  <option value="elementary">Elementary</option>
+                  <option value="middle-school">Middle School</option>
+                  <option value="high-school">High School</option>
+                  <option value="admin">Administration</option>
+                  <option value="support-staff">Support Staff</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-semibold mb-1">Contract Type *</label>
+                <select
+                  name="contractType"
+                  value={formData.contractType}
+                  onChange={handleFormChange}
+                  required
+                  className="w-full px-3 py-2 border border-card-border rounded text-sm"
+                >
+                  <option value="Full-time">Full-time</option>
+                  <option value="Part-time">Part-time</option>
+                  <option value="Contract">Contract</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-semibold mb-1">Start Date *</label>
+                <input
+                  type="date"
+                  name="startDate"
+                  value={formData.startDate}
+                  onChange={handleFormChange}
+                  required
+                  className="w-full px-3 py-2 border border-card-border rounded text-sm"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-semibold mb-1">Salary (optional)</label>
+                <input
+                  type="text"
+                  name="salary"
+                  value={formData.salary}
+                  onChange={handleFormChange}
+                  placeholder="e.g., $65,000-$80,000/yr"
+                  className="w-full px-3 py-2 border border-card-border rounded text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold mb-1">Application URL *</label>
+                <input
+                  type="url"
+                  name="applicationUrl"
+                  value={formData.applicationUrl}
+                  onChange={handleFormChange}
+                  required
+                  placeholder="https://..."
+                  className="w-full px-3 py-2 border border-card-border rounded text-sm"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold mb-1">Job Description *</label>
+              <textarea
+                name="description"
+                value={formData.description}
+                onChange={handleFormChange}
+                required
+                rows={4}
+                placeholder="Describe the position, responsibilities, qualifications..."
+                className="w-full px-3 py-2 border border-card-border rounded text-sm"
+              />
+            </div>
+
+            {/* Logo upload */}
+            <div>
+              <label className="block text-sm font-semibold mb-1">School Logo (optional)</label>
+              <div className="flex items-center gap-3">
+                {logoPreview ? (
+                  <img src={logoPreview} alt="Logo" className="w-12 h-12 object-contain border border-card-border rounded" />
+                ) : (
+                  <div className="w-12 h-12 flex items-center justify-center bg-gray-100 border border-card-border rounded text-text-muted text-xs">
+                    No logo
+                  </div>
+                )}
+                <button type="button" onClick={() => fileInputRef.current?.click()} className="btn-secondary text-xs">
+                  {logoPreview ? 'Change' : 'Upload'}
+                </button>
+                {logoPreview && (
+                  <button type="button" onClick={() => { setLogo(''); setLogoPreview('') }} className="text-xs text-red-600 hover:underline">
+                    Remove
+                  </button>
+                )}
+              </div>
+              <input ref={fileInputRef} type="file" accept="image/*" onChange={handleLogoUpload} className="hidden" />
+            </div>
+
+            {/* Career page URL — saved to School directory */}
+            <div>
+              <label className="block text-sm font-semibold mb-1">School Career Page URL (optional)</label>
+              <input
+                type="url"
+                name="careerPageUrl"
+                value={formData.careerPageUrl}
+                onChange={handleFormChange}
+                placeholder="https://school.edu/careers — saved for automated crawling"
+                className="w-full px-3 py-2 border border-card-border rounded text-sm"
+              />
+              <p className="text-xs text-text-muted mt-1">
+                If the school matches our directory, this URL is saved for future automated crawling.
+              </p>
+            </div>
+
+            <button
+              type="submit"
+              disabled={postJobLoading}
+              className="btn-primary w-full disabled:opacity-50"
+            >
+              {postJobLoading ? 'Posting...' : 'Post Job (Goes Live Immediately)'}
+            </button>
+          </form>
+        )}
+      </div>
 
       {/* Crawler Controls */}
       <div className="bg-card-bg border border-card-border rounded-[15px] p-3 sm:p-4 md:p-6 mb-6">
@@ -447,7 +858,7 @@ export default function AdminPage() {
                         rel="noopener noreferrer"
                         className="text-xs text-blue-600 hover:underline"
                       >
-                        View source listing →
+                        View source listing
                       </a>
                     )}
                   </div>

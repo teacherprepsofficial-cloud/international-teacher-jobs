@@ -9,6 +9,7 @@ export interface ISchoolAdmin extends Document {
   subscriptionTier: 'basic' | 'standard' | 'premium'
   subscriptionStatus: 'active' | 'cancelled' | 'past_due'
   passwordHash: string
+  isSuperAdmin: boolean
   resetToken?: string
   resetTokenExpires?: Date
   createdAt: Date
@@ -25,6 +26,7 @@ const SchoolAdminSchema = new Schema<ISchoolAdmin>(
     subscriptionTier: { type: String, enum: ['basic', 'standard', 'premium'], default: 'basic' },
     subscriptionStatus: { type: String, enum: ['active', 'cancelled', 'past_due'], default: 'active' },
     passwordHash: { type: String, required: true },
+    isSuperAdmin: { type: Boolean, default: false },
     resetToken: String,
     resetTokenExpires: Date,
   },
