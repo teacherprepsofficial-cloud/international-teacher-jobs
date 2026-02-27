@@ -4,6 +4,7 @@ import { CrawlRun } from '@/models/CrawlRun'
 import { JOB_SOURCES } from './sources'
 import { parseTesNextData, parseTieOnlineHtml, computeContentHash } from './parser'
 import { runAtsCrawl } from './ats-crawler'
+import { runCareerPageCrawl } from './career-page-crawler'
 import { CrawlResult } from './types'
 
 const FETCH_TIMEOUT = 15_000 // 15 seconds
@@ -162,6 +163,22 @@ export async function runCrawl(maxPagesOverride?: number): Promise<CrawlResult[]
     console.error('[ATS Crawl] Fatal error:', err.message)
     results.push({
       source: 'ats-platforms',
+      jobsFound: 0,
+      jobsNew: 0,
+      jobsSkipped: 0,
+      errors: [err.message],
+      durationMs: 0,
+    })
+  }
+
+  // Run direct school career page crawl
+  try {
+    const careerPageResult = await runCareerPageCrawl(crawlerAdminId)
+    results.push(careerPageResult)
+  } catch (err: any) {
+    console.error('[Career Page Crawl] Fatal error:', err.message)
+    results.push({
+      source: 'school-career-pages',
       jobsFound: 0,
       jobsNew: 0,
       jobsSkipped: 0,

@@ -34,8 +34,12 @@ export interface ISchool extends Document {
 
   // ATS (Applicant Tracking System) — auto-discovered via discovery script
   atsPlatform?: 'greenhouse' | 'lever' | 'workable'
-  atsSlug?: string        // Company slug on the ATS platform
-  atsDiscoveredAt?: Date  // When the ATS was last confirmed working
+  atsSlug?: string              // Company slug on the ATS platform
+  atsDiscoveredAt?: Date        // When the ATS was last confirmed working
+
+  // Website / career page discovery (auto-discovered via discover-school-websites.ts)
+  websiteDiscoveredAt?: Date    // When website was last auto-discovered
+  atsDetected?: string          // ATS type detected on career page (e.g. 'bamboohr', 'workday')
 
   // Computed
   profileCompleteness: number
@@ -75,6 +79,8 @@ const SchoolSchema = new Schema<ISchool>(
     atsPlatform: { type: String, enum: ['greenhouse', 'lever', 'workable'] },
     atsSlug: String,
     atsDiscoveredAt: Date,
+    websiteDiscoveredAt: Date,
+    atsDetected: String,
 
     // Claim
     claimed: { type: Boolean, default: false },
