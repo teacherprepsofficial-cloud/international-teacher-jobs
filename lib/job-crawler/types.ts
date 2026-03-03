@@ -21,7 +21,7 @@ export interface JobSource {
   name: string
   baseUrl: string
   searchUrl: string
-  parserType: 'tes' | 'tie-online'
+  parserType: 'tes' | 'seekteachers' | 'tieonline' | 'isj-feed'
   maxPages: number
 }
 

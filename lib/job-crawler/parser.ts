@@ -259,101 +259,218 @@ export function parseTesNextData(html: string, baseUrl: string): CrawledJob[] {
 }
 
 // ---------------------------------------------------------------------------
+// SeekTeachers parser
+// seekteachers.com — international school job board with server-rendered HTML
+// Each job card has: title in <span style="font-size: 24px">, location text,
+// link to /job-detail.asp?job_id=NNNNN, start date, salary
+// ---------------------------------------------------------------------------
+export function parseSeekTeachersHtml(html: string, baseUrl: string): CrawledJob[] {
+  const jobs: CrawledJob[] = []
+
+  // Match each job listing block: starts with titlebar-listing, contains job link
+  // Pattern: find all job-detail links with their surrounding context
+  const jobBlockRegex = /<a\s+href="[^"]*job-detail\.asp\?job_id=(\d+)"[^>]*>\s*<span[^>]*style="font-size:\s*24px[^"]*"[^>]*>([\s\S]*?)<\/span>([\s\S]*?)<\/a>/gi
+
+  let match
+  while ((match = jobBlockRegex.exec(html)) !== null) {
+    try {
+      const jobId = match[1]
+      const titleRaw = match[2].replace(/<[^>]+>/g, '').trim()
+      const locationRaw = match[3].replace(/<[^>]+>/g, '').replace(/\s*-\s*New this week\s*/i, '').trim()
+
+      if (!titleRaw || !jobId) continue
+
+      // Parse title — often "Position - City - Start Date"
+      const position = titleRaw
+
+      // Parse location — format: "Permanent Post in City, Country, Region"
+      let contractType: 'Full-time' | 'Part-time' | 'Contract' = 'Full-time'
+      let locationStr = locationRaw
+      const postMatch = locationRaw.match(/^(Permanent Post|Fixed Term|Contract|Part Time|Temporary)\s+in\s+(.+)$/i)
+      if (postMatch) {
+        const postType = postMatch[1].toLowerCase()
+        if (postType.includes('fixed') || postType.includes('contract') || postType.includes('temporary')) {
+          contractType = 'Contract'
+        } else if (postType.includes('part')) {
+          contractType = 'Part-time'
+        }
+        locationStr = postMatch[2]
+      }
+
+      // Location is "City, Country, Region" — take city and country
+      const locParts = locationStr.split(',').map(p => p.trim())
+      const city = locParts[0] || 'Unknown'
+      const country = locParts.length >= 2 ? locParts[1] : locParts[0]
+      const { countryCode } = resolveCountryCode(country)
+
+      const sourceUrl = `${baseUrl}/job-detail.asp?job_id=${jobId}`
+
+      // Try to find description, start date, and salary after this job block
+      let startDate: string | undefined
+      let salary: string | undefined
+      let description = ''
+      const afterBlock = html.slice(match.index + match[0].length, match.index + match[0].length + 2000)
+
+      // Extract description from the margin-top div
+      const descMatch = afterBlock.match(/<div\s+class="margin-top">([\s\S]*?)<\/div>/i)
+      if (descMatch) {
+        description = descMatch[1].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 500)
+      }
+
+      const startDateMatch = afterBlock.match(/Start Date:<\/span>\s*<b>(.*?)<\/b>/i)
+      if (startDateMatch) {
+        startDate = startDateMatch[1].trim()
+      }
+
+      const salaryMatch = afterBlock.match(/<span><b>(.*?)<\/b>\s*<\/span>/i)
+      if (salaryMatch) {
+        const salaryText = salaryMatch[1].trim()
+        if (salaryText && !salaryText.includes('negotiable')) {
+          salary = salaryText
+        }
+      }
+
+      jobs.push({
+        position,
+        schoolName: 'SeekTeachers Listing',
+        city,
+        country,
+        countryCode: countryCode !== 'XX' ? countryCode : 'XX',
+        region: getRegionForCountryCode(countryCode),
+        description,
+        sourceUrl,
+        sourceKey: `seekteachers-${jobId}`,
+        salary,
+        contractType,
+        startDate: startDate || 'TBD',
+        positionCategory: categorizePosition(position),
+      })
+    } catch (err) {
+      console.error('[SeekTeachers Parser] Error parsing job entry:', err)
+    }
+  }
+
+  return jobs
+}
+
+// ---------------------------------------------------------------------------
 // TIE Online parser
-// tieonline.com — "The International Educator" job board
-// HTML structure: each job is in a <div class="job-listing"> block
-// We extract: title, school, location, description, URL
+// tieonline.com — "The International Educator" job board (ColdFusion)
+// HTML structure: <li><a href="/job_ad_details.cfm?JobID=NNNNN">Title (Country)</a></li>
 // ---------------------------------------------------------------------------
 export function parseTieOnlineHtml(html: string, baseUrl: string): CrawledJob[] {
   const jobs: CrawledJob[] = []
 
-  // TIE Online uses a JSON-LD script or __NEXT_DATA__ — try __NEXT_DATA__ first
-  // If not found, fall back to structured HTML parsing
-  const nextMatch = html.match(/<script\s+id="__NEXT_DATA__"\s+type="application\/json">([\s\S]*?)<\/script>/i)
-  if (nextMatch) {
+  // Match all job links: /job_ad_details.cfm?JobID=NNNNN
+  const jobLinkRegex = /<a\s+href="\/job_ad_details\.cfm\?JobID=(\d+)"[^>]*>([\s\S]*?)<\/a>/gi
+
+  const seen = new Set<string>() // dedupe within page (same job can appear in sidebar + main)
+  let match
+  while ((match = jobLinkRegex.exec(html)) !== null) {
     try {
-      const data = JSON.parse(nextMatch[1])
-      // Try to find jobs array in common Next.js data paths
-      const pageProps = data?.props?.pageProps
-      const jobsList: any[] =
-        pageProps?.jobs ||
-        pageProps?.jobListings ||
-        pageProps?.data?.jobs ||
-        []
+      const jobId = match[1]
+      if (seen.has(jobId)) continue
+      seen.add(jobId)
 
-      for (const j of jobsList) {
-        const title = (j.title || j.jobTitle || j.position || '').trim()
-        const school = (j.school || j.schoolName || j.employer || j.organization || '').trim()
-        const location = (j.location || j.city || j.country || '').trim()
-        const url = j.url || j.link || j.applyUrl || j.slug || ''
-        const desc = (j.description || j.summary || j.excerpt || '').trim()
+      const rawText = match[2].replace(/<[^>]+>/g, '').trim()
+      if (!rawText) continue
 
-        if (!title || !school) continue
+      // Parse "Position Title (Country)" format
+      const titleCountryMatch = rawText.match(/^(.+?)\s*\(([^)]+)\)\s*$/)
+      let position: string
+      let country: string
 
-        const { city, country, countryCode } = resolveCountryCode(location)
-        const sourceUrl = url.startsWith('http') ? url : `${baseUrl}${url}`
-
-        jobs.push({
-          position: title,
-          schoolName: school,
-          city,
-          country,
-          countryCode,
-          region: getRegionForCountryCode(countryCode),
-          description: desc.slice(0, 800),
-          sourceUrl,
-          sourceKey: `tie-${computeContentHash(title, school, sourceUrl).slice(0, 12)}`,
-          contractType: 'Full-time',
-          positionCategory: categorizePosition(title),
-        })
+      if (titleCountryMatch) {
+        position = titleCountryMatch[1].trim()
+        country = titleCountryMatch[2].trim()
+      } else {
+        position = rawText
+        country = 'Unknown'
       }
 
-      if (jobs.length > 0) return jobs
-    } catch { /* fall through to HTML parsing */ }
+      if (!position) continue
+
+      const { countryCode } = resolveCountryCode(country)
+      const sourceUrl = `${baseUrl}/job_ad_details.cfm?JobID=${jobId}`
+
+      jobs.push({
+        position,
+        schoolName: 'TIE Online Listing',
+        city: country, // TIE only shows country, not city
+        country,
+        countryCode: countryCode !== 'XX' ? countryCode : 'XX',
+        region: getRegionForCountryCode(countryCode),
+        description: '',
+        sourceUrl,
+        sourceKey: `tie-${jobId}`,
+        contractType: 'Full-time',
+        positionCategory: categorizePosition(position),
+      })
+    } catch (err) {
+      console.error('[TIE Parser] Error parsing job entry:', err)
+    }
   }
 
-  // HTML fallback — TIE Online renders job cards with consistent class names
-  // Pattern: look for repeated job card blocks and extract text
-  const jobCardRegex = /<article[^>]*class="[^"]*job[^"]*"[^>]*>([\s\S]*?)<\/article>/gi
-  const linkRegex = /href="([^"]+)"/i
-  const titleRegex = /<h[23][^>]*>([\s\S]*?)<\/h[23]>/i
-  const schoolRegex = /<(?:span|p|div)[^>]*class="[^"]*(?:school|employer|organization)[^"]*"[^>]*>([\s\S]*?)<\/(?:span|p|div)>/i
-  const locationRegex = /<(?:span|p|div)[^>]*class="[^"]*location[^"]*"[^>]*>([\s\S]*?)<\/(?:span|p|div)>/i
-  const descRegex = /<(?:p|div)[^>]*class="[^"]*(?:description|summary|excerpt)[^"]*"[^>]*>([\s\S]*?)<\/(?:p|div)>/i
+  return jobs
+}
+
+// ---------------------------------------------------------------------------
+// International School Jobs (ISJ) XML feed parser
+// internationalschooljobs.com — provides a /feed.xml with structured job data
+// Each <job> has: title, referencenumber, company, city, country, description
+// ---------------------------------------------------------------------------
+export function parseIsjFeedXml(xml: string, baseUrl: string): CrawledJob[] {
+  const jobs: CrawledJob[] = []
+
+  // Match each <job>...</job> block
+  const jobBlockRegex = /<job>([\s\S]*?)<\/job>/gi
 
   let match
-  while ((match = jobCardRegex.exec(html)) !== null) {
-    const card = match[1]
-    const titleMatch = titleRegex.exec(card)
-    const schoolMatch = schoolRegex.exec(card)
-    const locationMatch = locationRegex.exec(card)
-    const linkMatch = linkRegex.exec(card)
-    const descMatch = descRegex.exec(card)
+  while ((match = jobBlockRegex.exec(xml)) !== null) {
+    try {
+      const block = match[1]
 
-    const title = titleMatch ? titleMatch[1].replace(/<[^>]+>/g, '').trim() : ''
-    const school = schoolMatch ? schoolMatch[1].replace(/<[^>]+>/g, '').trim() : ''
-    const location = locationMatch ? locationMatch[1].replace(/<[^>]+>/g, '').trim() : ''
-    const href = linkMatch ? linkMatch[1] : ''
-    const desc = descMatch ? descMatch[1].replace(/<[^>]+>/g, '').trim() : ''
+      const extract = (tag: string): string => {
+        const m = block.match(new RegExp(`<${tag}>(?:<!\\[CDATA\\[)?(.*?)(?:\\]\\]>)?<\\/${tag}>`, 'is'))
+        return m ? m[1].trim() : ''
+      }
 
-    if (!title || !school) continue
+      const title = extract('title')
+      const refNum = extract('referencenumber')
+      const company = extract('company')
+      const city = extract('city')
+      const country = extract('country')
+      const descHtml = extract('description')
 
-    const { city, country, countryCode } = resolveCountryCode(location)
-    const sourceUrl = href.startsWith('http') ? href : `${baseUrl}${href}`
+      if (!title || !refNum) continue
 
-    jobs.push({
-      position: title,
-      schoolName: school,
-      city,
-      country,
-      countryCode,
-      region: getRegionForCountryCode(countryCode),
-      description: desc.slice(0, 800),
-      sourceUrl,
-      sourceKey: `tie-${computeContentHash(title, school, sourceUrl).slice(0, 12)}`,
-      contractType: 'Full-time',
-      positionCategory: categorizePosition(title),
-    })
+      const { countryCode } = resolveCountryCode(country || city)
+
+      // Strip HTML from description, keep first 500 chars
+      const description = descHtml
+        .replace(/<[^>]+>/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .slice(0, 500)
+
+      const sourceUrl = `${baseUrl}/jobs/${refNum}`
+
+      jobs.push({
+        position: title,
+        schoolName: company || 'International School Jobs Listing',
+        city: city || 'Unknown',
+        country: country || 'Unknown',
+        countryCode: countryCode !== 'XX' ? countryCode : 'XX',
+        region: getRegionForCountryCode(countryCode),
+        description,
+        sourceUrl,
+        sourceKey: `isj-${refNum}`,
+        contractType: 'Full-time',
+        positionCategory: categorizePosition(title),
+      })
+    } catch (err) {
+      console.error('[ISJ Parser] Error parsing job entry:', err)
+    }
   }
 
   return jobs

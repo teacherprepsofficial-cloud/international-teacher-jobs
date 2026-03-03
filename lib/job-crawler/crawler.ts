@@ -2,10 +2,11 @@ import { connectDB } from '@/lib/db'
 import { JobPosting } from '@/models/JobPosting'
 import { CrawlRun } from '@/models/CrawlRun'
 import { JOB_SOURCES } from './sources'
-import { parseTesNextData, parseTieOnlineHtml, computeContentHash } from './parser'
+import { parseTesNextData, parseSeekTeachersHtml, parseTieOnlineHtml, parseIsjFeedXml, computeContentHash } from './parser'
+import { School } from '@/models/School'
 import { runAtsCrawl } from './ats-crawler'
 import { runCareerPageCrawl } from './career-page-crawler'
-import { CrawlResult } from './types'
+import { CrawledJob, CrawlResult } from './types'
 
 const FETCH_TIMEOUT = 15_000 // 15 seconds
 const DELAY_BETWEEN_PAGES = 2_000 // 2 seconds between page fetches
@@ -64,9 +65,10 @@ export async function runCrawl(maxPagesOverride?: number): Promise<CrawlResult[]
 
     try {
       for (let page = 1; page <= maxPages; page++) {
+        const separator = source.searchUrl.includes('?') ? '&' : '?'
         const pageUrl = page === 1
           ? source.searchUrl
-          : `${source.searchUrl}&page=${page}`
+          : `${source.searchUrl}${separator}page=${page}`
 
         console.log(`[Crawler] Fetching ${source.id} page ${page}/${maxPages}: ${pageUrl}`)
 
@@ -79,15 +81,43 @@ export async function runCrawl(maxPagesOverride?: number): Promise<CrawlResult[]
           break // Stop paginating on fetch error
         }
 
-        // Parse jobs from this page
-        let pageJobs =
-          source.parserType === 'tie-online'
-            ? parseTieOnlineHtml(html, source.baseUrl)
-            : parseTesNextData(html, source.baseUrl)
-        console.log(`[Crawler] Page ${page}: found ${pageJobs.length} jobs`)
+        // Parse jobs from this page using the appropriate parser
+        console.log(`[Crawler] Page ${page}: fetched ${html.length} bytes`)
+        let pageJobs: CrawledJob[]
+        switch (source.parserType) {
+          case 'seekteachers':
+            pageJobs = parseSeekTeachersHtml(html, source.baseUrl)
+            break
+          case 'tieonline':
+            pageJobs = parseTieOnlineHtml(html, source.baseUrl)
+            break
+          case 'isj-feed':
+            pageJobs = parseIsjFeedXml(html, source.baseUrl)
+            break
+          case 'tes':
+          default:
+            pageJobs = parseTesNextData(html, source.baseUrl)
+            break
+        }
+        console.log(`[Crawler] Page ${page}: parsed ${pageJobs.length} jobs from HTML`)
+
+        // Filter out UK domestic jobs for TES (keep if school name contains "international")
+        if (source.id === 'tes-international') {
+          pageJobs = pageJobs.filter(job => {
+            if (job.countryCode !== 'GB') return true
+            return /international/i.test(job.schoolName)
+          })
+          console.log(`[Crawler] Page ${page}: ${pageJobs.length} after UK domestic filter`)
+        }
 
         if (pageJobs.length === 0) {
-          console.log(`[Crawler] No more jobs on page ${page}, stopping pagination`)
+          if (page === 1) {
+            const errMsg = `CRITICAL: Page 1 returned 0 jobs for ${source.id} — source URL or parser may be broken`
+            console.error(`[Crawler] ${errMsg}`)
+            result.errors.push(errMsg)
+          } else {
+            console.log(`[Crawler] No more jobs on page ${page}, stopping pagination`)
+          }
           break
         }
 
@@ -105,7 +135,7 @@ export async function runCrawl(maxPagesOverride?: number): Promise<CrawlResult[]
           }
 
           try {
-            await JobPosting.create({
+            const newJob = await JobPosting.create({
               adminId: crawlerAdminId,
               schoolName: job.schoolName,
               city: job.city,
@@ -114,11 +144,11 @@ export async function runCrawl(maxPagesOverride?: number): Promise<CrawlResult[]
               region: job.region,
               position: job.position,
               positionCategory: job.positionCategory,
-              description: job.description,
+              description: job.description || `${job.position} at ${job.schoolName} in ${job.city}, ${job.country}. View the full listing for details.`,
               applicationUrl: job.sourceUrl,
               salary: job.salary,
               contractType: job.contractType,
-              startDate: job.startDate,
+              startDate: job.startDate || 'TBD',
               subscriptionTier: 'basic',
               status: 'live',
               publishedAt: new Date(),
@@ -131,6 +161,18 @@ export async function runCrawl(maxPagesOverride?: number): Promise<CrawlResult[]
               staleCheckFailCount: 0,
             })
             result.jobsNew++
+
+            // Auto-link to school directory if name matches
+            if (!newJob.schoolId && job.schoolName) {
+              try {
+                const school = await School.findOne({
+                  name: { $regex: new RegExp(`^${job.schoolName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') },
+                })
+                if (school) {
+                  await JobPosting.updateOne({ _id: newJob._id }, { schoolId: school._id })
+                }
+              } catch { /* non-critical — skip */ }
+            }
           } catch (err: any) {
             // Handle duplicate key error (race condition)
             if (err.code === 11000) {
