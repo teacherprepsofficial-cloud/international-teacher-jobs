@@ -158,26 +158,46 @@ export default function HomePage() {
             <div className="text-center text-text-muted py-12">No jobs found matching your criteria.</div>
           ) : (
             <div className="space-y-3 sm:space-y-4">
-              {jobs.map((job, index) => {
-                const showDate = shouldShowDate(index)
+              {(() => {
+                const today = new Date()
+                const firstJobDate = jobs.length > 0 ? new Date(getJobDate(jobs[0])) : null
+                const todayHeaderShown = !firstJobDate || !isSameDay(firstJobDate, today)
 
                 return (
-                  <div key={job._id}>
-                    {showDate && (
+                  <>
+                    {todayHeaderShown && (
                       <div className="mb-2 sm:mb-3 flex items-center justify-between">
                         <span className="text-xs text-text-muted font-semibold hidden sm:inline">
-                          {formatDate(getJobDate(job))}
+                          {formatDate(today.toISOString())}
                         </span>
                         <span className="text-xs text-text-muted font-semibold sm:hidden">
-                          {formatDateShort(getJobDate(job))}
+                          {formatDateShort(today.toISOString())}
                         </span>
-                        {index === 0 && (
-                          <span className="text-xs font-semibold">
-                            Total Jobs: <span className="text-accent-blue">{totalLiveCount.toLocaleString()}</span>
-                          </span>
-                        )}
+                        <span className="text-xs font-semibold">
+                          Total Jobs: <span className="text-accent-blue">{totalLiveCount.toLocaleString()}</span>
+                        </span>
                       </div>
                     )}
+                    {jobs.map((job, index) => {
+                      const showDate = shouldShowDate(index)
+
+                      return (
+                        <div key={job._id}>
+                          {showDate && (
+                            <div className="mb-2 sm:mb-3 flex items-center justify-between">
+                              <span className="text-xs text-text-muted font-semibold hidden sm:inline">
+                                {formatDate(getJobDate(job))}
+                              </span>
+                              <span className="text-xs text-text-muted font-semibold sm:hidden">
+                                {formatDateShort(getJobDate(job))}
+                              </span>
+                              {index === 0 && !todayHeaderShown && (
+                                <span className="text-xs font-semibold">
+                                  Total Jobs: <span className="text-accent-blue">{totalLiveCount.toLocaleString()}</span>
+                                </span>
+                              )}
+                            </div>
+                          )}
                     <Link href={`/jobs/${job._id}`}>
                       <div
                         className={`job-card ${
@@ -233,7 +253,10 @@ export default function HomePage() {
                     </Link>
                   </div>
                 )
-              })}
+                    })}
+                  </>
+                )
+              })()}
             </div>
           )}
 
