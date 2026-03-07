@@ -179,7 +179,7 @@ export default function HomePage() {
                       </div>
                     )}
                     {jobs.map((job, index) => {
-                      const showDate = shouldShowDate(index) && !(index === 0 && todayHeaderShown)
+                      const showDate = !todayHeaderShown && shouldShowDate(index)
 
                       return (
                         <div key={job._id}>
